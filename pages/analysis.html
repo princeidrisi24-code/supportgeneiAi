@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results | SupportGenie</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/theme.js"></script>
+    <style>
+        .nav-link { text-decoration: none; color: var(--text-secondary); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
+        .nav-link:hover { color: var(--text-primary); }
+        .nav-link.active { color: var(--text-primary); background: var(--btn-secondary-bg); }
+        .info-row { display: flex; padding: 14px 0; border-bottom: 1px solid var(--card-border); }
+        .info-label { width: 140px; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; }
+        .info-value { flex: 1; font-weight: 500; }
+        .confidence-bar { height: 8px; background: var(--track-bg); border-radius: 4px; overflow: hidden; }
+        .confidence-bar-fill { height: 100%; border-radius: 4px; transition: width 1.5s ease-out; }
+        .confidence-bar-fill.high { background: var(--success); }
+        .confidence-bar-fill.medium { background: var(--warning); }
+        .confidence-bar-fill.low { background: var(--error); }
+    </style>
+</head>
+<body>
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar glass-card">
+        <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
+            <a href="dashboard.html" class="logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
+                <span style="font-size:1.5rem;">🧞‍♂️</span>
+                <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">SupportGenie</span>
+            </a>
+            <div class="nav-links" style="display:flex;gap:8px;align-items:center;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="new-ticket.html" class="nav-link active">New Ticket</a>
+                <a href="history.html" class="nav-link">History</a>
+                <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-left:8px;">☀️</button>
+                <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                    <div class="avatar" id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d2ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;"></div>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container">
+        <div class="animate-fade-in-up">
+            <!-- Back button -->
+            <div class="mb-3">
+                <a href="new-ticket.html" class="btn btn-ghost" style="padding-left:0;">← Analyze Another Ticket</a>
+            </div>
+
+            <!-- Alert Banner (shown conditionally) -->
+            <div id="review-alert" class="alert-banner alert-warning hidden mb-3">
+                ⚠️ <strong>Human Review Recommended:</strong> <span id="review-reason"></span>
+            </div>
+
+            <!-- Analysis Metrics Grid -->
+            <div class="grid-4 mb-4" id="analysis-metrics">
+                <div class="glass-card-sm" style="text-align:center;">
+                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Category</div>
+                    <div id="res-category" class="badge" style="font-size:1rem;padding:8px 16px;">—</div>
+                </div>
+                <div class="glass-card-sm" style="text-align:center;">
+                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Priority</div>
+                    <div id="res-priority" class="badge" style="font-size:1rem;padding:8px 16px;">—</div>
+                </div>
+                <div class="glass-card-sm" style="text-align:center;">
+                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Sentiment</div>
+                    <div id="res-sentiment" style="font-size:1.2rem;font-weight:600;">—</div>
+                </div>
+                <div class="glass-card-sm" style="text-align:center;">
+                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Confidence</div>
+                    <div style="position:relative;margin-top:4px;">
+                        <div class="confidence-bar"><div id="res-conf-bar" class="confidence-bar-fill"></div></div>
+                        <div id="res-conf-text" style="font-size:0.9rem;font-weight:700;margin-top:6px;">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column: Extracted Info + Original Ticket -->
+            <div class="grid-2 mb-4">
+                <div class="glass-card">
+                    <h3 class="mb-3">🔍 Extracted Information</h3>
+                    <div class="info-row"><span class="info-label">Customer Name:</span><span id="res-name" class="info-value">—</span></div>
+                    <div class="info-row"><span class="info-label">Order Number:</span><span id="res-order" class="info-value">—</span></div>
+                    <div class="info-row"><span class="info-label">Product/Item:</span><span id="res-product" class="info-value">—</span></div>
+                    <div class="info-row" style="border-bottom:none;"><span class="info-label">Issue Summary:</span><span id="res-summary" class="info-value">—</span></div>
+                </div>
+                <div class="glass-card">
+                    <h3 class="mb-3">📧 Original Ticket</h3>
+                    <div id="original-ticket" style="font-size:0.9rem;line-height:1.6;color:rgba(255,255,255,0.7);white-space:pre-wrap;max-height:200px;overflow-y:auto;"></div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="text-center">
+                <a href="response.html" class="btn btn-primary btn-lg">📝 View Draft Response →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:60px;">
+        <div class="container text-center">
+            <p class="text-muted" style="font-size:0.85rem;">SupportGenie — AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ai-engine.js"></script>
+    <script src="../js/db.js"></script>
+    <script>
+        // Auth guard
+        if (typeof Auth !== 'undefined' && !Auth.requireAuth()) {
+            window.location.href = '../login.html';
+        }
+        
+        // Set user avatar
+        let user = { name: 'User', id: '1' };
+        if (typeof Auth !== 'undefined') user = Auth.getCurrentUser() || user;
+        
+        if(user && user.name) {
+            document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+        }
+        
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await Auth.logout();
+        });
+        
+        // Toast utility
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+    </script>
+    <script>
+        const analysis = JSON.parse(sessionStorage.getItem('sg_current_analysis'));
+        if (!analysis) { window.location.href = 'new-ticket.html'; }
+        else {
+            // Populate results
+            const catEl = document.getElementById('res-category');
+            catEl.textContent = analysis.category;
+            const catClass = 'badge-' + analysis.category.toLowerCase().replace(/[\s\/]/g, '-').replace('return-refund','return');
+            catEl.className = 'badge ' + catClass;
+
+            const priEl = document.getElementById('res-priority');
+            priEl.textContent = analysis.priority;
+            priEl.className = 'badge badge-' + analysis.priority.toLowerCase();
+
+            document.getElementById('res-sentiment').textContent = analysis.sentiment;
+
+            // Confidence bar
+            const confVal = analysis.confidence;
+            const confBar = document.getElementById('res-conf-bar');
+            setTimeout(() => { confBar.style.width = confVal + '%'; }, 100);
+            confBar.className = 'confidence-bar-fill ' + (confVal > 80 ? 'high' : confVal > 60 ? 'medium' : 'low');
+            document.getElementById('res-conf-text').textContent = confVal + '%';
+
+            // Extracted info
+            const name = analysis.customerName || (analysis.extractedInfo && analysis.extractedInfo.customerName) || 'Not detected';
+            const order = analysis.orderNum || analysis.orderNumber || (analysis.extractedInfo && analysis.extractedInfo.orderNumber) || 'Not detected';
+            const product = analysis.product || analysis.productName || (analysis.extractedInfo && analysis.extractedInfo.productName) || 'Not detected';
+            const summary = analysis.summary || (analysis.extractedInfo && analysis.extractedInfo.issueSummary) || 'N/A';
+
+            document.getElementById('res-name').textContent = name;
+            document.getElementById('res-order').textContent = order;
+            document.getElementById('res-product').textContent = product;
+            document.getElementById('res-summary').textContent = summary;
+
+            // Original ticket
+            document.getElementById('original-ticket').textContent = analysis.rawText || 'No text provided';
+
+            // Review alert
+            if (analysis.needsReview) {
+                const alertEl = document.getElementById('review-alert');
+                alertEl.classList.remove('hidden');
+                document.getElementById('review-reason').textContent = analysis.confidence < 70 
+                    ? 'Low confidence score. Please review the classification carefully.'
+                    : 'High priority with angry sentiment detected. Consider escalating.';
+            }
+        }
+    </script>
+</body>
+</html>

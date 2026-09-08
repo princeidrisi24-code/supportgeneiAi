@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Ticket | SupportGenie</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/theme.js"></script>
+    <style>
+        .nav-link { text-decoration: none; color: var(--text-secondary); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
+        .nav-link:hover { color: var(--text-primary); }
+        .nav-link.active { color: var(--text-primary); background: var(--btn-secondary-bg); }
+        .char-counter { position: absolute; bottom: 12px; right: 16px; font-size: 0.8rem; pointer-events: none; }
+        .ticket-textarea { min-height: 220px; }
+        .processing-steps .processing-step { display: flex; align-items: center; gap: 12px; padding: 8px 0; opacity: 0; transform: translateX(-10px); transition: all 0.4s ease; }
+        .processing-step.active { opacity: 1; transform: translateX(0); }
+        .processing-step.done .icon { color: var(--success); }
+    </style>
+</head>
+<body>
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar glass-card">
+        <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
+            <a href="dashboard.html" class="logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
+                <span style="font-size:1.5rem;">🧞‍♂️</span>
+                <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">SupportGenie</span>
+            </a>
+            <div class="nav-links" style="display:flex;gap:8px;align-items:center;">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="new-ticket.html" class="nav-link active">New Ticket</a>
+                <a href="history.html" class="nav-link">History</a>
+                <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-left:8px;">☀️</button>
+                <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                    <div class="avatar" id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d2ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;"></div>
+                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container">
+        <div class="animate-fade-in-up">
+            <div class="glass-card">
+                <h2 class="mb-1">Analyze New Ticket</h2>
+                <p class="subtitle mb-4">Paste the customer email below to get AI-powered insights and a draft response.</p>
+                
+                <div class="form-group">
+                    <label for="ticket-input">Customer Email / Ticket Content</label>
+                    <div style="position:relative;">
+                        <textarea id="ticket-input" class="form-input ticket-textarea" placeholder="Paste customer message here..."></textarea>
+                        <span id="char-count" class="char-counter text-muted">0 characters</span>
+                    </div>
+                </div>
+
+                <div class="options-row mb-3">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="tone-select">Response Tone</label>
+                        <select id="tone-select" class="form-input">
+                            <option value="professional">Professional</option>
+                            <option value="friendly" selected>Friendly</option>
+                            <option value="empathetic">Empathetic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sample-bar mb-4">
+                    <span class="text-muted" style="font-size:0.85rem;">Try a sample:</span>
+                    <div id="sample-buttons" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                </div>
+
+                <button id="analyze-btn" class="btn btn-primary btn-block btn-lg">
+                    <span class="btn-text">✨ Analyze Ticket</span>
+                    <span class="spinner hidden"></span>
+                </button>
+
+                <!-- Processing Steps (hidden initially) -->
+                <div id="processing-steps" class="processing-steps hidden" style="margin-top:20px;">
+                    <div class="processing-step" data-step="1"><span class="icon">⏳</span><span class="text">Classifying issue type...</span></div>
+                    <div class="processing-step" data-step="2"><span class="icon">⏳</span><span class="text">Analyzing sentiment & urgency...</span></div>
+                    <div class="processing-step" data-step="3"><span class="icon">⏳</span><span class="text">Extracting key information...</span></div>
+                    <div class="processing-step" data-step="4"><span class="icon">⏳</span><span class="text">Generating draft response...</span></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:60px;">
+        <div class="container text-center">
+            <p class="text-muted" style="font-size:0.85rem;">SupportGenie — AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ai-engine.js"></script>
+    <script src="../js/db.js"></script>
+    <script>
+        // Auth guard
+        if (typeof Auth !== 'undefined' && !Auth.requireAuth()) {
+            window.location.href = '../login.html';
+        }
+        
+        // Set user avatar
+        let user = { name: 'User', id: '1' };
+        if (typeof Auth !== 'undefined') user = Auth.getCurrentUser() || user;
+        
+        if (user && user.name) {
+            document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+        }
+        
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await Auth.logout();
+        });
+        
+        // Toast utility
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+    </script>
+    <script>
+        const ticketInput = document.getElementById('ticket-input');
+        const charCount = document.getElementById('char-count');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const sampleBtns = document.getElementById('sample-buttons');
+
+        // Populate sample buttons
+        if (typeof SAMPLE_TICKETS !== 'undefined') {
+            SAMPLE_TICKETS.forEach(sample => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-ghost btn-sm';
+                btn.style.cssText = 'border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:6px 14px;font-size:0.8rem;transition:all 0.2s ease;';
+                btn.textContent = sample.label;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#sample-buttons button').forEach(b => {
+                        b.style.borderColor = 'rgba(255,255,255,0.15)';
+                        b.style.background = 'transparent';
+                    });
+                    btn.style.borderColor = '#00d2ff';
+                    btn.style.background = 'rgba(0,210,255,0.1)';
+                    ticketInput.value = sample.text;
+                    charCount.textContent = sample.text.length + ' characters';
+                    showToast(`Loaded sample: ${sample.label}`);
+                });
+                sampleBtns.appendChild(btn);
+            });
+        }
+
+        // Char count
+        ticketInput.addEventListener('input', () => {
+            charCount.textContent = ticketInput.value.length + ' characters';
+        });
+
+        // Ctrl+Enter shortcut
+        ticketInput.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') analyzeBtn.click();
+        });
+
+        // Analyze
+        analyzeBtn.addEventListener('click', () => {
+            const text = ticketInput.value.trim();
+            if (!text) { showToast('Please paste a customer ticket first.', 'error'); return; }
+            if (text.length < 5) { showToast('Ticket text is too short.', 'error'); return; }
+            
+            // Show loading
+            analyzeBtn.querySelector('.btn-text').classList.add('hidden');
+            analyzeBtn.querySelector('.spinner').classList.remove('hidden');
+            analyzeBtn.disabled = true;
+            
+            // Show processing steps
+            const stepsContainer = document.getElementById('processing-steps');
+            const steps = stepsContainer.querySelectorAll('.processing-step');
+            stepsContainer.classList.remove('hidden');
+            steps.forEach(s => { s.classList.remove('active', 'done'); s.querySelector('.icon').textContent = '⏳'; });
+            
+            let delay = 0;
+            steps.forEach((step, i) => {
+                setTimeout(() => {
+                    step.classList.add('active');
+                    if (i > 0) { steps[i-1].classList.add('done'); steps[i-1].querySelector('.icon').textContent = '✅'; }
+                }, delay);
+                delay += 400;
+            });
+            
+            setTimeout(() => {
+                steps[steps.length - 1].classList.add('done');
+                steps[steps.length - 1].querySelector('.icon').textContent = '✅';
+                
+                // Run AI
+                if (typeof SupportGenieAI !== 'undefined') {
+                    const ai = new SupportGenieAI();
+                    const tone = document.getElementById('tone-select').value;
+                    const analysis = ai.analyze(text);
+                    const draft = ai.generateDraft(analysis, user.storeName || 'Our Store', tone);
+                    
+                    // Store in sessionStorage for the analysis page
+                    sessionStorage.setItem('sg_current_analysis', JSON.stringify(analysis));
+                    sessionStorage.setItem('sg_current_draft', draft);
+                    sessionStorage.setItem('sg_current_tone', tone);
+                    
+                    // Navigate to analysis page
+                    setTimeout(() => {
+                        window.location.href = 'analysis.html';
+                    }, 400);
+                } else {
+                    showToast('AI engine not loaded', 'error');
+                    analyzeBtn.querySelector('.btn-text').classList.remove('hidden');
+                    analyzeBtn.querySelector('.spinner').classList.add('hidden');
+                    analyzeBtn.disabled = false;
+                }
+            }, delay + 400);
+        });
+    </script>
+</body>
+</html>

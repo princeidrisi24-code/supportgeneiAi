@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SupportGenie - AI-Powered Support</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      backdrop-filter: blur(10px);
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .hero-stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hero-stat-item .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .step-number {
+      font-size: 3rem;
+      font-weight: 700;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      opacity: 0.1;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .step-icon, .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .step-card {
+      position: relative;
+    }
+    
+    /* Default resets / helpers */
+    .text-center { text-align: center; }
+    .mb-4 { margin-bottom: 1.5rem; }
+    .mb-6 { margin-bottom: 3rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-4 { margin-top: 1.5rem; }
+    .mt-6 { margin-top: 3rem; }
+    .text-secondary, .text-muted { color: #888; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  </style>
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <nav class="navbar glass-card">
+    <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
+      <a href="index.html" class="logo">
+        <span class="genie-icon">🧞‍♂️</span>
+        <h1 style="font-size:1.3rem; margin: 0;" class="gradient-text">SupportGenie</h1>
+      </a>
+      <div class="nav-links">
+        <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-right: 8px;">☀️</button>
+        <button id="demo-nav-btn" class="btn btn-secondary btn-sm" style="margin-right: 8px;">⚡ Instant Demo</button>
+        <a href="login.html" class="btn btn-ghost" style="margin-right: 8px; text-decoration: none;">Login</a>
+        <a href="signup.html" class="btn btn-primary btn-sm" style="text-decoration: none;">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" style="text-align: center; padding: 4rem 1rem;">
+    <div class="hero-content animate-fade-in-up container">
+      <div class="hero-badge">✨ AI-Powered Support</div>
+      <h1 style="font-size: 3.5rem; margin-bottom: 1rem;">Handle Support Tickets <span class="gradient-text">10x Faster</span></h1>
+      <p class="tagline text-secondary" style="font-size: 1.25rem; max-width: 600px; margin: 0 auto 2rem;">SupportGenie uses AI to classify tickets, detect urgency, and draft professional responses — so your small team can deliver enterprise-level support.</p>
+      <div class="hero-cta" style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+        <button id="demo-hero-btn" class="btn btn-secondary btn-lg">⚡ Try Instant Demo</button>
+        <a href="signup.html" class="btn btn-primary btn-lg" style="text-decoration: none;">Start Free →</a>
+      </div>
+      <div class="hero-stats mt-6">
+        <div class="hero-stat-item"><span class="stat-number gradient-text">75%</span><span class="text-secondary">Time Saved</span></div>
+        <div class="hero-stat-item"><span class="stat-number gradient-text">< 3min</span><span class="text-secondary">Per Ticket</span></div>
+        <div class="hero-stat-item"><span class="stat-number gradient-text">93%</span><span class="text-secondary">Accuracy</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container mb-6">
+    <h2 class="text-center mb-4">How It Works</h2>
+    <div class="grid-3 steps-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+      <div class="step-card glass-card animate-fade-in-up stagger-1" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="step-number">01</div>
+        <div class="step-icon">📥</div>
+        <h3 style="margin-bottom: 0.5rem;">Paste Ticket</h3>
+        <p class="text-secondary">Copy any customer email and paste it into SupportGenie</p>
+      </div>
+      <div class="step-card glass-card animate-fade-in-up stagger-2" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="step-number">02</div>
+        <div class="step-icon">🤖</div>
+        <h3 style="margin-bottom: 0.5rem;">AI Analysis</h3>
+        <p class="text-secondary">Our AI classifies, prioritizes, and extracts key information instantly</p>
+      </div>
+      <div class="step-card glass-card animate-fade-in-up stagger-3" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="step-number">03</div>
+        <div class="step-icon">✉️</div>
+        <h3 style="margin-bottom: 0.5rem;">Send Response</h3>
+        <p class="text-secondary">Review the AI-drafted response, edit if needed, and send</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container mb-6">
+    <h2 class="text-center mb-4">Powerful Features</h2>
+    <div class="grid-3 features-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <div class="feature-card glass-card" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="feature-icon">🏷️</div>
+        <h3 style="margin-bottom: 0.5rem;">Smart Classification</h3>
+        <p class="text-secondary">Auto-categorize into 7+ categories with weighted AI scoring</p>
+      </div>
+      <div class="feature-card glass-card" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="feature-icon">🚨</div>
+        <h3 style="margin-bottom: 0.5rem;">Priority Detection</h3>
+        <p class="text-secondary">Critical, High, Medium, Low — with automatic escalation flags</p>
+      </div>
+      <div class="feature-card glass-card" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="feature-icon">💬</div>
+        <h3 style="margin-bottom: 0.5rem;">Sentiment Analysis</h3>
+        <p class="text-secondary">Detect angry, frustrated, neutral, or positive customer tone</p>
+      </div>
+      <div class="feature-card glass-card" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="feature-icon">✍️</div>
+        <h3 style="margin-bottom: 0.5rem;">Draft Responses</h3>
+        <p class="text-secondary">AI generates professional, tone-matched responses instantly</p>
+      </div>
+      <div class="feature-card glass-card" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="feature-icon">📊</div>
+        <h3 style="margin-bottom: 0.5rem;">Analytics Dashboard</h3>
+        <p class="text-secondary">Track tickets analyzed, time saved, and category trends</p>
+      </div>
+      <div class="feature-card glass-card" style="padding: 2rem; border-radius: 12px; text-align: center;">
+        <div class="feature-icon">🛡️</div>
+        <h3 style="margin-bottom: 0.5rem;">Human-in-the-Loop</h3>
+        <p class="text-secondary">Confidence scoring flags uncertain cases for manual review</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container mb-6">
+    <div class="glass-card text-center" style="padding: 60px 40px; border-radius: 16px;">
+      <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Transform Your Support?</h2>
+      <p class="subtitle mt-2 mb-4 text-secondary" style="font-size: 1.1rem;">Join small e-commerce businesses saving 12+ hours daily on customer support.</p>
+      <a href="signup.html" class="btn btn-primary btn-lg" style="text-decoration: none;">Get Started Free →</a>
+    </div>
+  </section>
+
+  <footer class="footer" style="padding: 24px 0; border-top: 1px solid var(--card-border, rgba(255,255,255,0.1)); margin-top: auto;">
+    <div class="container flex-between">
+      <div class="footer-logo logo">🧞‍♂️ <span style="font-weight: 600;">SupportGenie</span></div>
+      <p class="text-muted">AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
+    </div>
+  </footer>
+
+  <script>
+    // Redirect to dashboard if already logged in
+    if (typeof Auth !== 'undefined' && Auth.redirectIfLoggedIn) {
+      Auth.redirectIfLoggedIn();
+    }
+
+    const demoNav = document.getElementById('demo-nav-btn');
+    const demoHero = document.getElementById('demo-hero-btn');
+    const handleDemo = () => {
+      if (typeof Auth !== 'undefined' && Auth.demoLogin) {
+        Auth.demoLogin();
+      } else {
+        window.location.href = 'pages/dashboard.html';
+      }
+    };
+    if (demoNav) demoNav.addEventListener('click', handleDemo);
+    if (demoHero) demoHero.addEventListener('click', handleDemo);
+  </script>
+</body>
+</html>
