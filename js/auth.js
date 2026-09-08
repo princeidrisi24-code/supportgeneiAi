@@ -2,7 +2,7 @@
 // SupportGenie Auth Module — Supabase + localStorage fallback
 // ============================================================
 
-const SUPABASE_URL  = 'https://zbhvkailriqxmgnlnwog.supabase.co';
+const SUPABASE_URL = 'https://zbhvkailriqxmgnlnwog.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpiaHZrYWlscmlxeG1nbmxud29nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3NjMyOTcsImV4cCI6MjEwNDMzOTI5N30.pKh4LXnsnl_ZPVkH2v2-7C3Bos3nknqGbwrWe_xTV34';
 
 // Initialise Supabase client (SDK loaded via CDN in HTML)
@@ -11,23 +11,23 @@ try {
   if (typeof supabase !== 'undefined') {
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   }
-} catch (_) {}
+} catch (_) { }
 
 const Auth = {
   SESSION_KEY: 'supportgenie_session',
-  STORAGE_KEY: 'supportgenie_users',  // fallback only
+  STORAGE_KEY: 'supportgenie_users',  // fallback only in the system
 
   // ── helpers ──────────────────────────────────────────────
-  _sb()        { return sb; },
+  _sb() { return sb; },
   getSession() { return JSON.parse(localStorage.getItem(this.SESSION_KEY) || 'null'); },
 
   _saveSession(user) {
     const s = {
-      id:        user.id,
-      name:      user.name,
-      email:     user.email,
+      id: user.id,
+      name: user.name,
+      email: user.email,
       storeName: user.storeName || 'My Store',
-      loginAt:   Date.now()
+      loginAt: Date.now()
     };
     localStorage.setItem(this.SESSION_KEY, JSON.stringify(s));
     return s;
@@ -35,7 +35,7 @@ const Auth = {
 
   // ── signup ───────────────────────────────────────────────
   async signup(name, email, password, storeName) {
-    if (!name.trim())       return { success: false, error: 'Please enter your name.' };
+    if (!name.trim()) return { success: false, error: 'Please enter your name.' };
     if (password.length < 6) return { success: false, error: 'Password must be at least 6 characters.' };
 
     // --- Supabase path ---
@@ -98,14 +98,14 @@ const Auth = {
 
   // ── logout ───────────────────────────────────────────────
   async logout() {
-    if (sb) { try { await sb.auth.signOut(); } catch(_){} }
+    if (sb) { try { await sb.auth.signOut(); } catch (_) { } }
     localStorage.removeItem(this.SESSION_KEY);
     const p = window.location.pathname;
     window.location.href = p.includes('/pages/') ? '../login.html' : 'login.html';
   },
 
   // ── guards ───────────────────────────────────────────────
-  isLoggedIn()  { return this.getSession() !== null; },
+  isLoggedIn() { return this.getSession() !== null; },
 
   requireAuth() {
     if (!this.isLoggedIn()) {
