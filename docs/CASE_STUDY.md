@@ -1,4 +1,4 @@
-# SupportGenie AI — Product Case Study
+# Support Genei AI — Case Study
 
 **Customer Support Ticket Responder for Small E-Commerce Teams**
 
