@@ -1,9 +1,9 @@
-# 🧞‍♂️ Support Genei AI — Case Study
+# 🧞‍♂️ SupportGenie AI — Case Study
 
 **Customer Support Ticket Responder for Small E-Commerce Teams**
 
 > 🌐 **Live Prototype**: [https://supportgenieai.netlify.app](https://supportgenieai.netlify.app)  
-> 💻 **Source Code**: [https://github.com/princeidrisi24-code/supportgeneiAi](https://github.com/princeidrisi24-code/supportgeneiAi)  
+> 💻 **Source Code**: [https://github.com/princeidrisi24-code/SupportGenieAi](https://github.com/princeidrisi24-code/SupportGenieAi)  
 > 🗄️ **Database & Auth**: Powered by **Supabase** (Postgres + Row Level Security)  
 > 📄 **Sprint Context**: 5-Day AI-Native Product Sprint
 
@@ -367,7 +367,7 @@ Simply visit [https://supportgenieai.netlify.app](https://supportgenieai.netlify
 ### Option 2: Local Setup
 1. Clone this repository:
    ```bash
-   git clone https://github.com/princeidrisi24-code/supportgeneiAi.git
+   git clone https://github.com/princeidrisi24-code/SupportGenieAi.git
    ```
 2. Open `index.html` in any web browser or start a simple local server:
    ```bash
