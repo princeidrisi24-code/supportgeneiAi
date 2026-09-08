@@ -1,415 +1,451 @@
-# 🧞‍♂️  AI — Case Study
+# 🧞‍♂️ Support Genei AI — Case Study
 
 **Customer Support Ticket Responder for Small E-Commerce Teams**
 
-> 🌐 **Live Prototype**: [https://ai.netlify.app](https://ai.netlify.app)  
-> 💻 **Source Code**: [https://github.com/princeidrisi24-code/Ai](https://github.com/princeidrisi24-code/Ai)  
-> 🗄️ **Database & Auth**: Powered by **Supabase** (Postgres + Row Level Security)  
-> 📄 **Sprint Context**: 5-Day AI-Native Product Sprint
+Live Prototype: [https://supportgenieai.netlify.app](https://supportgenieai.netlify.app)  
+Source Code: [https://github.com/princeidrisi24-code/supportgeneiAi](https://github.com/princeidrisi24-code/supportgeneiAi)
 
 ---
 
-## Section 1: Problem & User
+## What is Support Genei AI?
 
-### Who has this problem?
+Support Genei AI is a web-based tool that helps small e-commerce store owners handle customer support tickets faster. You paste a customer email into the app, and it instantly tells you what the customer wants, how they're feeling, how urgent it is, and gives you a ready-made reply you can edit and send.
 
-I focused on **solo e-commerce founders and tiny support teams** — people running independent Shopify or WooCommerce stores doing roughly $10k to $50k in monthly revenue. They usually have 1 to 3 people handling everything: marketing, inventory, packing orders, and customer support.
-
-The specific person I kept in mind while building this was someone like a small clothing brand owner. She runs her store mostly alone. Every evening, after her regular work is done, she opens her inbox and finds 25 to 40 customer emails waiting. Most of them are the same handful of questions over and over:
-
-- "Where is my order? It's been 2 weeks."
-- "I got a Medium but I ordered a Large. How do I return this?"
-- "I see two charges of $49.99 on my credit card."
-- "Do you have this jacket in brown?"
-
-She spends about 2 to 3 hours every night answering these. Not because the answers are hard — most of the time it's copy-pasting the same response with slight changes — but because she has to look up each order, figure out what the customer actually needs, and type it all out carefully.
-
-### Why it matters
-
-The real cost here isn't just time. It's the downstream damage:
-
-- **Slow responses lose customers.** Research from multiple e-commerce surveys consistently shows that customers who don't hear back within a few hours are significantly less likely to order again.
-- **Burnout leads to mistakes.** After answering 30 emails, the quality of responses drops. She might miss an angry customer who's about to file a chargeback.
-- **She can't afford enterprise tools.** Platforms like Zendesk or Gorgias with AI features cost $300 to $750/month. That's a big chunk of margin for a small store.
-
-### The actual bottleneck
-
-When I broke down the manual workflow, the time per ticket breaks into three parts:
-
-1. **Reading and understanding the email** — 2 to 3 minutes. What does this person want? Are they angry or just asking a question?
-2. **Looking up context** — 3 to 5 minutes. Finding the order number, checking shipping status, verifying what they ordered.
-3. **Writing and sending the response** — 5 to 7 minutes. Typing out a polite, accurate reply that covers the right policy.
-
-Total: roughly **12 to 15 minutes per ticket**. For 30 tickets a day, that's 6+ hours of support work.
-
-### What I scoped for 5 days
-
-I had to be realistic about what I could build in a week. Here's what I decided to include and exclude:
-
-**Built:**
-- Paste-and-analyze ticket workflow (no email integration needed)
-- AI classification into 8 categories with confidence scoring
-- Sentiment detection (angry, frustrated, neutral, positive)
-- Order number and customer name extraction
-- Draft response generator with 3 tone options
-- Dashboard with basic metrics tracking
-- Supabase database for storing processed tickets
-
-**Explicitly excluded:**
-- Direct email inbox connection (would need OAuth setup, out of scope)
-- Automatic email sending (too risky without human review)
-- Shopify API integration for live order lookups
-- Multi-user team features
+That's the short version. The rest of this document explains why I built it, how I built it, what AI tools I used in the process, and what I learned along the way.
 
 ---
 
-## Section 2: Evidence & Baseline
+## The Problem I Picked and Why
 
-### How I validated the problem
+### Who actually deals with this?
 
-I looked at three types of evidence:
+Small online store owners. People running Shopify or WooCommerce stores with maybe 1 or 2 people doing everything — from uploading product photos to packing boxes to answering customer emails.
 
-1. **Public datasets.** I reviewed open customer service ticket datasets (like those on Kaggle) and found that roughly 75-80% of tickets in e-commerce fall into just 4 to 5 categories. The distribution is remarkably consistent across different stores.
+These people get 20 to 40 support emails a day. Most emails ask the same things:
 
-2. **Forum and community research.** On Reddit (r/ecommerce, r/shopify) and indie hacker communities, the complaint about support being time-consuming comes up constantly. Small sellers frequently ask for affordable alternatives to enterprise helpdesk software.
+- "Where's my package?"
+- "I got the wrong size. How do I return it?"
+- "You charged me twice."
+- "Is this available in blue?"
 
-3. **Direct observation.** I timed myself going through sample support emails to establish a manual baseline. Reading, understanding context, and writing a proper reply consistently took 12 to 15 minutes when done carefully.
+The answers are almost always the same too. But the store owner still has to read each email, figure out what the customer needs, look up the order details, and type out a polite response. That takes about 12 to 15 minutes per ticket when done properly.
 
-### Baseline numbers
+For 30 tickets, that's 6 hours of work every single day just on customer support.
 
-| What I measured | Manual process (current) | What I aimed for |
+### Why this matters beyond just time
+
+- Slow replies lose customers. If someone doesn't hear back within a few hours, they're less likely to buy from you again.
+- After replying to 25 angry emails, you start making mistakes. You might miss a customer who's about to file a chargeback.
+- Tools like Zendesk and Gorgias cost $300 to $750 per month with AI features. That's too expensive for a store doing $15k to $30k in revenue.
+
+So the gap is clear: small merchants need something fast, cheap, and simple that doesn't require them to sign up for expensive enterprise software.
+
+---
+
+## The AI Tools and Platforms I Used to Build This
+
+This is the part the assignment asks me to highlight, so let me be specific about every tool and platform involved.
+
+### 1. Antigravity AI (Gemini-based Coding Assistant) — The Main AI Tool
+
+This was the primary AI tool I used throughout the sprint. It's a coding assistant powered by Google's Gemini model. Here's what I actually used it for:
+
+**What it helped with:**
+- Generating the initial HTML page structure for all 8 pages (landing, login, signup, dashboard, new ticket, analysis, response, history)
+- Writing the CSS design system — the glassmorphism effects, gradient backgrounds, responsive layouts, and the full light/dark theme system
+- Building out the keyword dictionaries for the classification engine. I described the categories I wanted, and it generated weighted keyword lists that I then reviewed and adjusted
+- Setting up the Supabase database schema with Row Level Security policies
+- Creating test case scenarios for the evaluation
+- Structuring documentation files
+
+**What it could NOT do (and what I did myself):**
+- It couldn't decide what product to build. I picked the problem domain, defined the target user, and chose the scope
+- It didn't design the user flow. I decided on the 3-step paste → analyze → draft workflow
+- It couldn't test the product. I ran every test case manually in the browser and verified the outputs
+- The AI-generated CSS sometimes had color conflicts between light and dark themes — I had to debug those myself
+- Template responses needed editing to sound like actual human support replies instead of corporate boilerplate
+- All product and business decisions (pricing, what to exclude, how the 60-day plan works) were mine
+
+**My honest take:** The AI assistant probably saved me 15 to 20 hours across the 5 days. Without it, I would not have been able to build 8 HTML pages, a full CSS design system, a 537-line AI engine, database integration, and documentation in one sprint. But it also introduced bugs that took time to fix — especially around theme colors bleeding into each other and layout gaps not being consistent.
+
+### 2. Supabase — Backend Database and Authentication
+
+I used Supabase as the backend. It gives you a free PostgreSQL database with built-in user authentication.
+
+**Why Supabase:**
+- Free tier is generous enough for a prototype (50,000 rows, unlimited API calls)
+- Has a visual SQL editor — I could paste my schema and run it in 30 seconds
+- Built-in Row Level Security means each user only sees their own tickets. I didn't have to write authorization logic from scratch
+- JavaScript client library (`@supabase/supabase-js`) works directly in the browser
+
+**What I set up in Supabase:**
+- `profiles` table — stores user display name, email, and store name
+- `tickets` table — stores every analyzed ticket with category, priority, sentiment, confidence score, draft response, time saved, customer name, and order number
+- RLS policies so users can only read, create, and delete their own data
+- Indexes on `user_id` and `created_at` for faster queries
+
+**Fallback design:** The app also works without Supabase. If the connection fails or credentials aren't set, everything falls back to localStorage. This was important because I wanted the prototype to work even if someone clones the repo without setting up their own Supabase project.
+
+### 3. Netlify — Deployment and Hosting
+
+I used Netlify to deploy the app. The site is live at `supportgenieai.netlify.app`.
+
+**Why Netlify:**
+- Zero configuration needed for static sites. I connected it and it just worked
+- Free tier includes custom domains, HTTPS, and CDN distribution
+- Auto-deploys whenever I push to the GitHub `main` branch
+- No server needed — the entire app runs client-side in the browser
+
+### 4. GitHub — Version Control and Code Repository
+
+The code is hosted at `github.com/princeidrisi24-code/supportgeneiAi`.
+
+**How I used it:**
+- Initialized a Git repository locally
+- Pushed all project files (19 files total) to the `main` branch
+- Connected Netlify to this repo for auto-deployment
+- Used SSH authentication (`git@github.com`) for pushing code
+
+### 5. VS Code — Code Editor
+
+Standard code editor. Nothing special here. Used it for manual code edits, debugging, and reviewing AI-generated code before accepting it.
+
+---
+
+## How the Product Actually Works (Step by Step)
+
+### Step 1: Sign Up or Log In
+
+The merchant creates an account with their name, email, password, and store name. Authentication is handled by Supabase Auth (JWT sessions). If Supabase isn't connected, it falls back to localStorage-based auth.
+
+### Step 2: Paste a Customer Email
+
+On the "New Ticket" page, the merchant pastes a raw customer email. They can also click one of 5 pre-loaded sample tickets to test the system:
+- Angry Shipping complaint
+- Return/Exchange request
+- Billing/Double charge
+- Product availability question
+- Technical/Login issue
+
+### Step 3: Instant AI Analysis
+
+In under 1 second, the engine processes the text and shows:
+
+- **Category**: One of 8 categories (Shipping, Billing, Return/Refund, Product Question, Technical, Complaint, Positive Feedback, Other)
+- **Confidence Score**: A percentage showing how sure the system is (with a visual bar)
+- **Sentiment**: Customer's emotional state — Angry 😠, Frustrated 😤, Neutral 😐, or Positive 😊
+- **Priority**: Critical (pulsing red badge), High, Medium, or Low
+- **Extracted Info**: Order number (like #4521), customer name (from email signature), and product name
+
+### Step 4: Review and Edit the Draft Response
+
+The system generates a complete email reply. The merchant can:
+- Pick a tone — Professional, Friendly, or Empathetic. The draft regenerates instantly
+- Edit the text directly in the textarea
+- Click "Regenerate" to get a different template
+- Hit "Save & Complete" to log the ticket and move to the next one
+
+### Step 5: Dashboard and History
+
+The dashboard shows total tickets processed, average confidence, total time saved, and a category breakdown chart. The history page shows all past tickets in a filterable table.
+
+---
+
+## What the AI Engine Does Under the Hood
+
+I want to be clear: the AI engine inside the product does **not** call ChatGPT, Claude, or any external API. It's a rule-based classification system written in JavaScript that runs entirely in the browser. Here's why I made that choice:
+
+- **No API cost.** An LLM call costs $0.01 to $0.05 per ticket. At 1,000 tickets/month, that's $10 to $50/month just for the AI layer. My engine costs $0/month.
+- **No latency.** API calls take 1 to 3 seconds. My engine processes a ticket in under 100ms.
+- **No hallucinations.** Because responses come from pre-written templates, the system never makes up fake return policies, wrong refund amounts, or imaginary tracking numbers.
+
+### Classification Logic
+
+The engine uses **weighted keyword scoring**. Each of the 8 categories has a dictionary of keywords with point values:
+
+| Keyword | Category | Points |
 |---|---|---|
-| Time per ticket | 12 – 15 minutes | Under 2 minutes |
-| First response turnaround | 18 – 24 hours (evening batch) | Under 5 minutes |
-| Tickets handled per hour | ~4 | ~30 |
-| Cost per ticket (at $20/hr labor) | ~$4.50 | Under $0.50 |
+| "charged twice" | Billing | 5 |
+| "charge" | Billing | 1 |
+| "where is my order" | Shipping | 5 |
+| "ship" | Shipping | 1 |
+| "wrong size" | Return/Refund | 5 |
+| "return" | Return/Refund | 2 |
+| "can't log in" | Technical | 5 |
+| "lawsuit" | Complaint | 5 |
 
-These aren't fancy projections. The manual baseline is what I measured myself, and the target is what I designed the tool to hit.
+Compound phrases get higher scores because they're more specific. The ticket is scored against all 8 dictionaries, and the category with the highest total wins.
 
----
+### Confidence Formula
 
-## Section 3: Solution & UX
+Confidence starts at 75% and adjusts based on:
+- **High score lead** → confidence goes up (the top category clearly won)
+- **Order number extracted** → +5% (concrete details mean clearer ticket)
+- **Short text (under 12 words)** → -15% (not enough signal to be sure)
+- **Two categories tied** → -10% (ambiguous intent)
+- Final value is clamped between 15% and 98%
 
-### How the product works
-
-The core idea is simple: **paste a customer email, get instant analysis and a ready-to-send draft**. The merchant stays in control the whole time — the AI does the tedious reading and drafting work, and the human makes the final call.
-
-The flow has three steps:
-
-**Step 1 — Input the ticket.**
-The merchant opens the "New Ticket" page and either pastes a customer email directly or clicks one of the sample ticket buttons to try it out. There's a character counter and clear input area. Nothing fancy here — the goal was to make it feel as simple as pasting text into a search bar.
-
-**Step 2 — See the analysis.**
-Within a second, the screen shows:
-- **Category** (like "Shipping & Delivery" or "Return/Refund") with a confidence percentage and a visual bar
-- **Sentiment** with an emoji (😠 Angry, 😤 Frustrated, 😐 Neutral, 😊 Positive)
-- **Priority level** (Critical, High, Medium, Low) — Critical tickets get a pulsing red badge so they're impossible to miss
-- **Extracted details** — if the email mentioned an order number like #4521 or the customer signed their name, those get pulled out and displayed
-
-**Step 3 — Review the draft and save.**
-The system generates a complete email response based on the category and extracted info. The merchant can:
-- Switch between three tones: Professional, Friendly, or Empathetic (the draft regenerates instantly)
-- Edit the text directly in the text area
-- Hit "Save & Complete" to log it and move to the next ticket
-- Or click "Regenerate" to get a different template
-
-### Where the human stays in the loop
-
-This was a deliberate design choice. Two specific situations trigger warnings:
-
-1. **Low confidence (below 70%).** When the AI isn't sure what category a ticket falls into — maybe the email is vague or touches multiple topics — it shows a yellow warning banner saying "Low AI Confidence — Manual Review Recommended." The draft still generates, but the merchant knows to read more carefully before sending.
-
-2. **Critical escalation keywords.** If the email contains words like "lawsuit," "attorney," "BBB," "chargeback," or "legal action," the system flags it as CRITICAL regardless of the category. The idea is that these emails need personal attention from the owner, not a templated response.
-
----
-
-## Section 4: AI Logic
-
-### What the AI actually does
-
-I want to be upfront about this:  does not call ChatGPT or any external LLM API. I built a **rule-based classification engine** that runs entirely in the browser using JavaScript. Here's why:
-
-- **Speed.** API calls add 1 to 3 seconds of latency. Rule-based scoring runs in under 100ms.
-- **Cost.** An LLM API would cost $0.01 to $0.05 per ticket at scale. The local engine costs nothing per ticket.
-- **Predictability.** With template-based responses, the output never hallucinates a fake return policy or wrong refund amount.
-
-### How classification works
-
-The engine uses **weighted keyword scoring** across 8 categories: Shipping, Billing, Return/Refund, Product Question, Technical, Complaint, Positive, and Other.
-
-Each category has a dictionary of keywords and phrases with point values. Compound phrases get higher scores than individual words:
-
-- `"charged twice"` → 5 points for Billing
-- `"charge"` (alone) → 1 point for Billing
-- `"where is my order"` → 5 points for Shipping
-- `"ship"` (alone) → 1 point for Shipping
-
-The ticket text gets normalized (lowercased, cleaned up), then scored against all 8 dictionaries. The category with the highest total score wins.
-
-### Confidence scoring
-
-Confidence isn't just the raw score. It's a computed value based on how "sure" the system is:
-
-- Starts at a 75% base
-- Gets a boost if the top category clearly beats the runner-up (bigger lead = more confident)
-- Gets +5% if an order number or customer name was successfully extracted (concrete details mean clearer tickets)
-- Gets a -20% penalty if the top two categories scored nearly the same (ambiguous = less confident)
-- Clamped between 10% and 98%
-
-### Sentiment detection
+### Sentiment Detection
 
 The engine checks for:
-- Aggressive language and profanity → Angry
-- Frustration words ("disappointed," "frustrated," "waited too long") → Frustrated
+- Profanity and aggressive words ("unacceptable," "worst," "horrible") → Angry
+- Frustration indicators ("disappointed," "frustrated") → Frustrated
+- ALL CAPS words and excessive `!!!` or `???` → increases anger score
+- Sarcasm detection ("oh great," "fantastic job," "thanks for nothing")
 - Positive words ("love," "great," "amazing") → Positive
-- Otherwise → Neutral
 
-It also factors in ALL-CAPS usage and excessive punctuation (multiple "!!!" or "???").
+### Safety and Edge Case Handling
 
-### Response generation
+This is where I spent a lot of time to make sure the product doesn't cause problems:
 
-Drafts come from a template bank — 3 templates per category, per tone (Professional, Friendly, Empathetic). That's 72 total pre-written templates. The system picks one and fills in `{Name}`, `{Order}`, and `{StoreName}` from extracted data.
+**PII Detection:** The engine scans for email addresses, phone numbers, credit card patterns, and SSN formats. If found, it flags the ticket for human review so sensitive data isn't accidentally included in a template response.
 
-This template approach was a deliberate trade-off: it gives up the flexibility of a generative LLM in exchange for zero hallucination risk and zero per-ticket cost.
+**Spam and Abuse Filtering:** Keywords like "buy cheap," "casino," "crypto investment" flag potential spam. Profanity flags abusive tickets for careful handling.
+
+**Input Validation:**
+- Empty or whitespace-only input → rejected with clear error message
+- Text under 10 characters → rejected (too short to analyze)
+- Text over 5,000 characters → rejected (too long)
+- Repetitive spam characters (like "aaaaaaaaa...") → detected and rejected based on character uniqueness ratio
+
+**Critical Escalation Triggers:** If the ticket contains words like "lawsuit," "attorney," "BBB," "consumer court," "chargeback," "unauthorized," "hacked," or "security breach," the system automatically sets priority to CRITICAL. These tickets need personal human attention, not a template response.
+
+**Low Confidence Fallback:** When confidence drops below 70%, the UI shows a yellow warning banner: "Low AI Confidence — Manual Review Recommended." The draft still generates (so the merchant has something to start with), but they know to read the ticket carefully before sending.
+
+**Multi-Intent Detection:** If two categories score within 3 points of each other, the system marks both (primary and secondary intent) and reduces confidence. For example, "I got the wrong item AND I was overcharged" touches both Return/Refund and Billing.
+
+**False Urgency Handling:** If someone writes "URGENT" but the ticket is just a product question, the system assigns Medium priority instead of High. It doesn't blindly trust urgency keywords without checking the actual content.
 
 ---
 
-## Section 5: Business & Operations
+## How This Reduces Workload and Saves Time
 
-### Customer value
+### The math is simple
 
-The core value is **time savings**. If a merchant currently spends 14 minutes per ticket and  brings that down to 1.5 minutes, that's 12.5 minutes saved per ticket. At 30 tickets per day, that's over 6 hours saved daily.
+| Task | Without Support Genei | With Support Genei |
+|---|---|---|
+| Read and understand the email | 2–3 minutes | 0 minutes (AI does it) |
+| Identify category and priority | 1–2 minutes | 0 minutes (instant) |
+| Look up order number | 3–5 minutes | 0 minutes (auto-extracted) |
+| Write the response | 5–7 minutes | 30 seconds (edit the draft) |
+| **Total per ticket** | **12–15 minutes** | **1–2 minutes** |
 
-For a solo founder paying themselves $20/hour equivalent, that's roughly $120/day or $3,600/month in recovered time — time they can spend on product development, marketing, or just not working until midnight.
+For a store handling 30 tickets per day:
+- **Without the tool:** 6+ hours of support work
+- **With the tool:** About 45 minutes to 1 hour
+
+That's roughly 5 hours saved every single day. In a month, that's 150 hours of recovered time.
+
+### Where the time savings come from
+
+1. **No more reading and re-reading.** The AI reads the email and shows you the summary, category, and sentiment in 1 second. You don't have to mentally parse a 3-paragraph angry email.
+
+2. **No more typing from scratch.** Instead of writing "Dear customer, we apologize for the inconvenience..." for the 50th time today, you get a complete draft that already has the customer's name, order number, and correct policy language.
+
+3. **No more missing urgent tickets.** Critical tickets get a pulsing red badge. You see them immediately instead of discovering a chargeback threat buried in your inbox at midnight.
+
+4. **No more context switching.** Order numbers are extracted right there in the analysis. You don't have to tab over to Shopify and search for "#4521" manually.
+
+---
+
+## Market Edge Cases I Considered
+
+### 1. What if the customer writes in slang or with typos?
+
+Tested this. Input like "wuz wondering if u restock size S blue hoodie text me" still classified correctly as Product Question. The keyword engine matches partial words and common patterns even when spelling is off.
+
+### 2. What if one email has multiple issues?
+
+The engine detects secondary intent. "I got the wrong item AND was charged twice" scores both Return/Refund and Billing. The primary category goes to whichever scored higher, and the secondary is flagged. Confidence drops to signal ambiguity.
+
+### 3. What if someone sends gibberish?
+
+Input like "asdfghjkl 12345" gets a 35% confidence score and triggers the low-confidence flag. The system doesn't pretend it understands — it tells you it doesn't.
+
+### 4. What about legal threats?
+
+Keywords like "lawsuit," "attorney," "BBB," or "chargeback" trigger CRITICAL priority regardless of the category. These need personal attention, not an automated template.
+
+### 5. What if the email is sarcastic?
+
+Sarcasm phrases like "oh great, another broken item" or "fantastic job guys" are detected. The sentiment marks it as "Frustrated (Sarcastic)" instead of misreading "great" and "fantastic" as positive.
+
+### 6. What about sensitive customer data in the email?
+
+The PII detector catches email addresses, phone numbers, credit card patterns, and SSN formats. When found, the ticket gets flagged for human review so the agent can handle the data carefully.
+
+### 7. What if someone tries to spam the system?
+
+Spam keywords ("buy cheap," "casino," "click here to win") and abusive language trigger safety flags. Repetitive characters are caught by the uniqueness ratio check.
+
+### 8. What if the store doesn't have Supabase set up?
+
+Everything falls back to localStorage. The product works fully offline — no database required for the core functionality.
+
+### 9. What about mobile users?
+
+The CSS is fully responsive. The layout switches from multi-column to single-column on smaller screens. All buttons and inputs are touch-friendly.
+
+### 10. What if a customer asks about a return outside the return window?
+
+Tested with "Can I exchange my item if I bought it 8 months ago?" — the system flags it as a policy exception at 64% confidence and routes to human review.
+
+---
+
+## The Sprint Process (How I Actually Built This in 5 Days)
+
+### Day 1: Figuring out the problem
+
+I spent most of this day researching. Looked at Reddit threads from small e-commerce owners, browsed Kaggle customer service datasets, and timed myself manually responding to sample support emails. The consistent pattern was clear: most tickets are repetitive, and small sellers can't afford enterprise tools.
+
+I defined my target user, mapped the manual workflow, and set a clear scope for what I would and wouldn't build.
+
+### Day 2: Designing the product and the AI logic
+
+I sketched the 3-step user flow (paste → analyze → draft) and decided on the 8 categories. I designed the weighted keyword scoring system and figured out the confidence formula. I also made the deliberate call to use rule-based AI instead of calling an LLM API — cost, speed, and predictability all favored this approach for a v1.
+
+### Day 3: Building the prototype
+
+This is where Antigravity AI (Gemini) was most useful. I used it to scaffold the HTML pages, generate the CSS design system, and build out the keyword dictionaries. I wrote the core classification logic with its help and set up Supabase for database storage.
+
+I spent a lot of time on the theme system — getting light mode and dark mode to look right without colors bleeding into each other was harder than expected.
+
+### Day 4: Testing and fixing
+
+I created 15 test scenarios across three categories (normal, edge, failure) and ran them all manually. Found and fixed several bugs:
+- The analysis page wasn't showing extracted customer names properly (field naming mismatch)
+- Multi-topic tickets sometimes showed "Not detected" for fields that were actually extracted
+- Some CSS colors in light mode were too close to the background, making text hard to read
+- The theme toggle wasn't persisting correctly on page navigation
+
+### Day 5: Documentation and packaging
+
+Wrote this case study, the test results matrix, the demo video script, and the README. Connected the repo to GitHub and deployed on Netlify. Packaged everything into a submission zip.
+
+---
+
+## Business Model (If This Were a Real Product)
 
 ### What it costs to run
 
-| Component | Monthly cost |
+| Item | Monthly cost |
 |---|---|
-| Supabase (database + auth) | $0 (free tier handles 50k rows) |
-| Netlify (hosting) | $0 (free tier) |
-| AI processing | $0 (runs locally in browser) |
-| **Total infrastructure cost** | **$0/month** |
+| Supabase (database + auth) | $0 — free tier |
+| Netlify (hosting + CDN) | $0 — free tier |
+| AI engine processing | $0 — runs in the browser |
+| **Total** | **$0/month** |
 
-At scale with a paid Supabase plan (beyond free tier limits), costs would be roughly $25/month for the database. Still negligible compared to the value delivered.
+At scale (beyond free tier limits), Supabase would cost about $25/month and Netlify about $19/month. Still under $50/month total.
 
-### What still requires manual work
+### Potential pricing
 
-- The merchant still needs to paste tickets in manually (no email sync yet)
-- Every draft needs human review before sending (by design, not a limitation)
-- CRITICAL tickets need personal handling — the tool flags them but can't resolve legal or chargeback situations
-- Template responses don't include real-time order tracking data (would need Shopify API integration)
+- **Free tier**: 50 tickets/month — good enough for brand new stores
+- **Pro ($19/month)**: 1,000 tickets/month with cloud storage and custom tones
+- **Growth ($49/month)**: Unlimited tickets, multi-store, team access
 
-### Key assumptions
+### Key assumption
 
-1. Most small merchants handle fewer than 1,000 tickets/month — the free Supabase tier covers this
-2. 75-80% of tickets genuinely fall into predictable categories — validated through dataset analysis
-3. Merchants prefer reviewing drafts over fully automated responses — confirmed through community research
-4. A rule-based engine is "good enough" for v1 — an LLM upgrade is the obvious v2 path
+The biggest assumption is that 75-80% of real-world tickets fall into predictable categories. The public datasets I reviewed support this, but it would need to be validated with actual merchant data in a pilot.
 
 ---
 
-## Section 6: Evaluation
+## 60-Day Post-Launch Validation Plan
 
-### What I tested
+### Weeks 1-2: Alpha with 10 stores
 
-I created **15 test scenarios** covering three categories:
+Give the tool to 10 small Shopify stores. Have them use it alongside their existing workflow. Measure how often they edit drafts before sending (target: under 20% of text edited).
 
-**Normal cases (6 tests)** — Standard tickets that a small store would get daily:
-- Shipping delay complaint with order number
-- Wrong size received, wants return
-- Double charge on credit card
-- Product availability question
-- Can't log into account
-- Positive feedback / compliment
+### Weeks 3-4: Beta with 50 stores
 
-All 6 classified correctly with confidence above 85%.
+If alpha numbers look good, expand. Track daily return rate, draft quality ratings, and category accuracy against merchant corrections.
 
-**Edge cases (5 tests)** — Trickier inputs:
-- Multi-topic ticket (wrong size AND shipping fee complaint) — classified as Return/Refund with reduced 72% confidence
-- Sarcastic complaint ("Oh great, another broken item. Fantastic job") — caught via negative sentiment markers
-- Informal/typo-heavy text ("wuz wondering if u restock") — still classified correctly
-- Urgent cancellation request — correctly escalated to High priority
-- Mixed intent (shipping status + receipt request) — primary intent (shipping) identified
-
-All 5 handled correctly, with lower confidence scores on ambiguous ones (which is the right behavior).
-
-**Failure and guardrail cases (4 tests)** — Designed to break or stress-test:
-- Gibberish input ("asdfghjkl 12345") — scored 35% confidence, triggered low-confidence flag ✅
-- Legal threat ("filing a lawsuit with my attorney") — triggered CRITICAL priority ✅
-- Extremely vague ticket ("the thing didn't do what it was supposed to") — scored 48% confidence, flagged for manual review ✅
-- Out-of-policy request (return after 8 months) — flagged as policy exception ✅
-
-### What worked well
-
-- Category accuracy was strong on clear, single-topic tickets (85-95% confidence)
-- The confidence scoring genuinely drops on ambiguous inputs, which is exactly what you want — it doesn't pretend to be sure when it isn't
-- Escalation triggers caught every legal/chargeback keyword I tested
-
-### What didn't work perfectly
-
-- Multi-topic tickets (e.g., "wrong item AND was overcharged") sometimes classified under the wrong primary category depending on word placement. The score was close, and confidence dropped to flag it, but the primary label wasn't always ideal.
-- Very short messages (under 10 words) tended to have low confidence even when the intent was obvious to a human. The keyword engine needs enough text to work with.
-- The template responses, while accurate, can feel generic. A customer writing a very specific complaint gets a somewhat boilerplate reply that the merchant would need to personalize.
-
-### Honest assessment
-
-For a rule-based engine built in 5 days, the accuracy is solid. It handles the 80% of tickets that are straightforward really well. The remaining 20% — ambiguous, multi-topic, or very short messages — it correctly identifies as uncertain and flags for human attention. That's the right behavior for a v1.
-
----
-
-## Section 7: 60-Day Post-Launch Validation Plan
-
-If this were to launch as a real product, here's how I'd validate it over 60 days:
-
-### Phase 1: Weeks 1-2 (Closed alpha with 10 stores)
-
-Recruit 10 small Shopify stores willing to use  alongside their existing workflow. They'd process tickets through both their manual process and , letting me compare side by side.
-
-**What I'd measure:**
-- How often do merchants edit the draft before sending? (Target: edits needed on less than 20% of text)
-- How long does the full paste-review-send flow take? (Target: under 3 minutes)
-- Do merchants actually trust the classifications? (Qualitative feedback)
-
-### Phase 2: Weeks 3-4 (Expand to 50 stores)
-
-Open beta to more stores if Phase 1 metrics look promising. Add basic analytics tracking to measure engagement patterns.
-
-**What I'd measure:**
-- Daily active usage (do they keep coming back or drop off after day 3?)
-- Average response quality rating (ask merchants to rate each draft 1-5)
-- Category accuracy on real tickets (compare AI labels vs merchant corrections)
-
-### Phase 3: Weeks 5-8 (Decide whether to continue)
-
-Based on the data, make a clear call:
+### Weeks 5-8: Make the call
 
 | Metric | Proceed ✅ | Iterate 🔄 | Stop ❌ |
 |---|---|---|---|
-| Draft edit rate | Less than 20% of text edited | 20 – 45% edited | Over 50% rewritten |
-| Daily return rate | 70%+ merchants come back daily | 40 – 70% return | Under 40% return |
-| Merchant satisfaction | Above 4.5 / 5 | Between 4.0 – 4.4 | Below 3.8 |
-| Time savings (self-reported) | 50%+ time reduction | 25 – 50% reduction | Under 25% reduction |
+| Draft edit rate | Under 20% | 20 – 45% | Over 50% |
+| Daily return rate | 70%+ come back | 40 – 70% | Under 40% |
+| Merchant satisfaction | Above 4.5/5 | 4.0 – 4.4 | Below 3.8 |
+| Time savings | 50%+ reduction | 25 – 50% | Under 25% |
 
-**If Proceed:** Start building direct Shopify integration (real-time order lookups) and apply for the Shopify App Store.
-
-**If Iterate:** Focus on improving the classification engine — likely add an LLM fallback for low-confidence tickets, and expand the keyword dictionaries based on real merchant data.
-
-**If Stop:** Pivot away from draft generation entirely. The classification and tagging piece might still be valuable as a standalone ticket routing tool, even if the response drafting isn't good enough.
+**Proceed** → Build Shopify API integration, apply for App Store listing  
+**Iterate** → Add LLM fallback for low-confidence tickets, expand keyword dictionaries  
+**Stop** → Pivot to pure ticket tagging/routing tool without draft generation
 
 ---
 
-## Section 8: Handoff Notes
+## Tech Stack Summary
 
-### For the product team
-- The core user insight is that small merchants don't want full automation — they want a fast first draft they can quickly review. Don't push toward auto-sending emails without explicit merchant opt-in.
-- The tone switcher (Professional/Friendly/Empathetic) came from observing that different stores have very different brand voices. This should eventually support custom tone presets.
-- The biggest feature request to expect is direct email inbox integration. That's the #1 thing that would reduce friction.
-
-### For engineering
-- The codebase is vanilla HTML/CSS/JS with no build step. Everything runs from static files on Netlify.
-- `js/ai-engine.js` contains the full classification engine. It's a single class (`AI`) with two main methods: `analyze(text)` and `generateDraft(analysis, storeName, tone)`.
-- `js/db.js` handles Supabase operations with a localStorage fallback. If the Supabase credentials aren't set, the app still works fully offline.
-- `js/auth.js` manages authentication. Currently uses localStorage-based sessions; Supabase Auth is wired in but can fall back gracefully.
-- The theme system (`js/theme.js`) supports light and dark modes. All colors use CSS custom properties.
-
-### For data and operations
-- The keyword dictionaries in `ai-engine.js` should be updated quarterly based on real ticket data. New product names, shipping carriers, and slang will naturally emerge.
-- Tickets flagged with confidence below 70% should be manually reviewed weekly to identify patterns the engine misses — these are the best training signals for improving accuracy.
-- The Supabase `tickets` table stores all processed tickets with their classifications, confidence scores, and response drafts. This data is the foundation for future ML model training.
+| Layer | Tool / Platform | Why I Chose It |
+|---|---|---|
+| Frontend | HTML5, CSS3, Vanilla JS (ES6+) | No build step, loads instantly, easy to deploy |
+| Design | Glassmorphism CSS with CSS Variables | Modern look, easy light/dark theme switching |
+| Backend | Supabase (PostgreSQL + Auth) | Free tier, built-in RLS, JS client library |
+| AI Engine | Custom weighted keyword scorer (JS) | Zero cost, sub-100ms speed, no hallucinations |
+| Hosting | Netlify | Free, auto-deploys from GitHub, HTTPS included |
+| Version Control | GitHub | Standard, connected to Netlify for CI/CD |
+| AI Development Tool | Antigravity (Gemini-based assistant) | Scaffolding, code generation, documentation help |
+| Code Editor | VS Code | Manual review, debugging, final edits |
 
 ---
 
-## 🛠️ Tech Stack & Architecture
-
-- **Frontend**: HTML5, Modern CSS3 (Glassmorphism, CSS Variables, Flexbox/Grid), Vanilla JavaScript ES6+.
-- **Backend & Database**: Supabase Cloud Database (PostgreSQL) with Row-Level Security policies.
-- **Authentication**: Supabase Auth (JWT Session management).
-- **AI Classification Engine**: Custom weighted phrase-scoring algorithm with dynamic confidence formula and template-based response generator.
-- **Deployment**: Netlify Continuous Integration / Continuous Deployment.
-
----
-
-## 📂 Project Structure
+## Project Structure
 
 ```
-/
-├── index.html              # Marketing Landing Page
-├── login.html              # User Login Screen
-├── signup.html             # User Registration Screen
+SupportGenie/
+├── index.html              # Landing page
+├── login.html              # Login
+├── signup.html             # Registration
 ├── pages/
-│   ├── dashboard.html      # Main Metrics Dashboard
-│   ├── new-ticket.html     # Live Ticket Analyzer Studio
-│   ├── analysis.html       # Extracted Entity & Intent Insights
-│   ├── response.html       # Draft Response Editor
-│   └── history.html        # Full Filterable Ticket Table
+│   ├── dashboard.html      # Metrics dashboard
+│   ├── new-ticket.html     # Ticket input
+│   ├── analysis.html       # AI analysis results
+│   ├── response.html       # Draft response editor
+│   └── history.html        # Ticket history table
 ├── css/
-│   └── styles.css          # Custom Glassmorphism CSS Design System
+│   └── styles.css          # Full design system (light + dark themes)
 ├── js/
-│   ├── auth.js             # Authentication Client
-│   ├── db.js               # Supabase Database CRUD + LocalStorage Fallback
-│   ├── ai-engine.js        # Core Categorization & Response Generator Logic
-│   └── theme.js            # Light/Dark Theme Switcher
+│   ├── auth.js             # Authentication (Supabase + localStorage fallback)
+│   ├── db.js               # Database CRUD (Supabase + localStorage fallback)
+│   ├── ai-engine.js        # Classification engine (537 lines)
+│   └── theme.js            # Light/Dark theme manager
 └── docs/
-    ├── CASE_STUDY.md        # This case study document
-    ├── TEST_RESULTS.md      # 15-Case Evaluation Matrix
-    ├── DEMO_VIDEO_SCRIPT.md # Step-by-step 5-minute recording guide
-    └── supabase-schema.sql  # Database DDL SQL Script
+    ├── CASE_STUDY.md        # This document
+    ├── TEST_RESULTS.md      # 15-case evaluation matrix
+    ├── DEMO_VIDEO_SCRIPT.md # Demo recording guide
+    └── supabase-schema.sql  # Database setup script
 ```
-
----
-
-## 🚀 Quick Setup & Installation
-
-### Option 1: Live Deployment (Recommended)
-Simply visit [https://ai.netlify.app](https://ai.netlify.app).
-
-### Option 2: Local Setup
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/princeidrisi24-code/Ai.git
-   ```
-2. Open `index.html` in any web browser or start a simple local server:
-   ```bash
-   npx serve .
-   ```
-3. Open `http://localhost:3000` in your browser.
-
----
-
-## 🗄️ Supabase One-Time Database Setup
-
-If connecting to a new Supabase project:
-1. Open your **Supabase Dashboard → SQL Editor → New query**.
-2. Copy and paste the contents of `docs/supabase-schema.sql`.
-3. Click **Run**.
 
 ---
 
 ## AI Tool-Use Disclosure
 
-**Tools used:** Antigravity AI coding assistant (Gemini-based) for development support.
+**Tool used:** Antigravity AI (Gemini 3.6 Flash and Claude Opus 4.6 Thinking)
 
 **What I used it for:**
-- Scaffolding the initial HTML page layouts and CSS styling
-- Generating the keyword dictionaries for the classification engine
-- Helping structure the test case scenarios
-- Drafting documentation (which I then edited and rewrote)
+- HTML page scaffolding and CSS styling
+- Keyword dictionary generation for the classification engine
+- Test case scenario creation
+- Documentation structuring and editing
+- Debugging theme color conflicts
+- Setting up Supabase schema with RLS policies
 
 **What I did myself:**
-- All product decisions (what to build, what to exclude, how the UX should flow)
-- The classification logic design (weighted scoring, confidence formula, escalation rules)
-- Business model and pricing decisions
-- Testing and validation (ran all 15 test cases manually in the browser)
-- Final review and editing of all code and documentation
+- Picked the problem, defined the user, set the scope
+- Designed the user flow and product experience
+- Made all business decisions (pricing, what to include/exclude)
+- Designed the classification logic (weighted scoring, confidence formula, escalation rules)
+- Ran all 15 test cases manually and verified outputs
+- Fixed bugs the AI introduced (theme bleeding, field naming mismatches, layout gaps)
+- Reviewed and edited every piece of code before committing
 
-**Limitations of AI assistance:**
-- The AI helped speed up repetitive coding but sometimes generated overly complex CSS that needed simplification
-- Template responses needed manual editing to sound natural rather than corporate
-- The AI couldn't validate user experience decisions — I had to test the actual flow myself
+**Limitations I ran into:**
+- AI-generated CSS needed manual fixes for theme consistency
+- Template responses sounded too corporate — had to edit them to sound natural
+- The AI couldn't test the product or validate UX decisions — that was all manual work
 
 ---
 
 ## Prior Work Disclosure
 
-Everything in this project was created from scratch during the 5-day sprint. No starter templates, UI kits, or pre-built components were used. The glassmorphism design system, JavaScript AI engine, Supabase integration, all 15 test scenarios, and this case study were all developed as part of this assignment.
+Everything in this project — the web app, the design system, the AI classification engine, the Supabase integration, all 15 test cases, and this case study — was built from scratch during the 5-day sprint. No pre-existing templates, UI kits, or starter code were used.
