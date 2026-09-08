@@ -1,145 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | SupportGenie</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Dashboard | </title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23753FC9'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>SG</text></svg>">
     <link rel="stylesheet" href="../css/styles.css">
     <script src="../js/theme.js"></script>
     <style>
-        .nav-link { text-decoration: none; color: var(--text-secondary); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-        .nav-link:hover { color: var(--text-primary); }
-        .nav-link.active { color: var(--text-primary); background: var(--btn-secondary-bg); }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            height: 34px;
+            padding: 4px 10px;
+            font-size: 13px;
+            width: auto;
+        }
     </style>
 </head>
+
 <body>
-    <div id="toast-container" class="toast-container"></div>
-    
-    <!-- Navbar -->
-    <nav class="navbar glass-card">
-        <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
-            <a href="dashboard.html" class="logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
-                <span style="font-size:1.5rem;">🧞‍♂️</span>
-                <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">SupportGenie</span>
-            </a>
-            <div class="nav-links" style="display:flex;gap:8px;align-items:center;">
-                <a href="dashboard.html" class="nav-link active">Dashboard</a>
-                <a href="new-ticket.html" class="nav-link">New Ticket</a>
-                <a href="history.html" class="nav-link">History</a>
-                <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-left:8px;">☀️</button>
-                <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
-                    <div class="avatar" id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d2ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;"></div>
-                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <div class="page-wrapper">
+        <div id="toast-container" class="toast-container"></div>
 
-    <main class="main-content container">
-        <div class="animate-fade-in-up">
-            <!-- Welcome Banner -->
-            <div class="glass-card mb-4" style="padding:28px 32px;">
-                <div class="flex-between" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-                    <div>
-                        <h2 style="margin-bottom:4px;">Welcome back, <span class="gradient-text" id="welcome-name">User</span> 👋</h2>
-                        <p class="text-secondary">Here's your support performance overview</p>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="container flex-between" style="height:64px; align-items:center;">
+                <a href="dashboard.html" class="logo">
+                    <svg class="logo-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                    <span class="brand-text" style="font-size:1.25rem;"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="dashboard.html" class="nav-item active">Dashboard</a>
+                    <a href="new-ticket.html" class="nav-item">New Ticket</a>
+                    <a href="history.html" class="nav-item">History</a>
+                    <button class="theme-toggle-btn" aria-label="Toggle Theme">Dark Theme</button>
+                    <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
                     </div>
-                    <a href="new-ticket.html" class="btn btn-primary">✨ Analyze New Ticket</a>
                 </div>
             </div>
+        </nav>
 
-            <!-- Stats Row -->
-            <div class="grid-4 mb-4" id="stats-grid">
-                <div class="stat-card glass-card-sm">
-                    <div class="stat-icon">🎫</div>
-                    <div class="stat-number gradient-text" id="stat-total">0</div>
-                    <div class="stat-label">Total Tickets</div>
-                </div>
-                <div class="stat-card glass-card-sm">
-                    <div class="stat-icon">⏱️</div>
-                    <div class="stat-number gradient-text" id="stat-time">0m</div>
-                    <div class="stat-label">Time Saved</div>
-                </div>
-                <div class="stat-card glass-card-sm">
-                    <div class="stat-icon">📊</div>
-                    <div class="stat-number gradient-text" id="stat-top-cat" style="font-size: clamp(1.1rem, 2vw, 1.6rem); word-break: break-word;">—</div>
-                    <div class="stat-label">Top Category</div>
-                </div>
-                <div class="stat-card glass-card-sm">
-                    <div class="stat-icon">🎯</div>
-                    <div class="stat-number gradient-text" id="stat-confidence">0%</div>
-                    <div class="stat-label">Avg Confidence</div>
-                </div>
-            </div>
-
-            <!-- Two Column: Recent + Quick Start -->
-            <div class="dashboard-grid mb-4">
-                <!-- Recent Tickets -->
-                <div class="glass-card" style="height:100%;">
-                    <div class="flex-between mb-3" style="display:flex;justify-content:space-between;align-items:center;">
-                        <h3>Recent Tickets</h3>
-                        <a href="history.html" class="btn btn-ghost btn-sm">View All →</a>
-                    </div>
-                    <div id="recent-tickets">
-                        <div class="empty-state" style="padding:30px;text-align:center;">
-                            <div class="icon" style="font-size:2.5rem;">📭</div>
-                            <div class="title" style="margin-top:8px;font-weight:600;">No tickets analyzed yet</div>
-                            <div class="description text-secondary" style="font-size:0.85rem;margin-bottom:16px;">Analyze your first ticket to see it here</div>
-                            <button id="load-demo-btn" class="btn btn-secondary btn-sm">⚡ Load 5 Sample Tickets</button>
+        <main class="main-content container" style="margin-top: 2rem;">
+            <div class="animate-fade-in-up">
+                <!-- Welcome Banner -->
+                <div class="card mb-4" style="padding: 2rem;">
+                    <div class="flex-between" style="flex-wrap:wrap; gap:16px;">
+                        <div>
+                            <h2 style="margin-bottom: 4px;">Welcome back, <span id="welcome-name"
+                                    style="color: var(--primary);">User</span></h2>
+                            <p class="text-secondary">Here is your support performance overview</p>
                         </div>
+                        <a href="new-ticket.html" class="btn btn-primary btn-lg" style="text-decoration: none;">Analyze
+                            New Ticket</a>
                     </div>
                 </div>
 
-                <!-- Quick Start Guide -->
-                <div class="glass-card" style="height:100%;">
-                    <h3 class="mb-3">Quick Start Guide</h3>
-                    <div style="display:flex;flex-direction:column;gap:14px;">
-                        <div class="glass-card-sm" style="display:flex;align-items:flex-start;gap:14px;padding:16px;">
-                            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;">1</div>
-                            <div style="flex:1;">
-                                <div style="font-weight:600;font-size:0.95rem;margin-bottom:4px;color:var(--text-primary);">Paste a ticket</div>
-                                <div class="text-secondary" style="font-size:0.85rem;line-height:1.4;">Copy a customer email and paste it in New Ticket</div>
+                <!-- Multi-Dimensional Synced Filter Bar -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label for="filter-category">Category:</label>
+                        <select id="filter-category" class="form-input filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="Shipping">Shipping</option>
+                            <option value="Billing">Billing</option>
+                            <option value="Return/Refund">Return/Refund</option>
+                            <option value="Product Question">Product Question</option>
+                            <option value="Complaint">Complaint</option>
+                            <option value="Technical">Technical</option>
+                            <option value="Positive">Positive</option>
+                            <option value="Other">Other / Unclassified</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-priority">Priority:</label>
+                        <select id="filter-priority" class="form-input filter-select">
+                            <option value="all">All Priorities</option>
+                            <option value="Critical">Critical</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-sentiment">Sentiment:</label>
+                        <select id="filter-sentiment" class="form-input filter-select">
+                            <option value="all">All Sentiments</option>
+                            <option value="Angry">Angry</option>
+                            <option value="Frustrated">Frustrated</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Positive">Positive</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-status">Status:</label>
+                        <select id="filter-status" class="form-input filter-select">
+                            <option value="all">All Statuses</option>
+                            <option value="AI Ready">AI Ready</option>
+                            <option value="AI Analyzed">AI Analyzed</option>
+                            <option value="Human Review Required">Human Review Required</option>
+                            <option value="Response Drafted">Response Drafted</option>
+                            <option value="Sent">Sent</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-date">Timeframe:</label>
+                        <select id="filter-date" class="form-input filter-select">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">Past 7 Days</option>
+                            <option value="month">Past 30 Days</option>
+                        </select>
+                    </div>
+
+                    <button id="reset-filters-btn" class="btn btn-tertiary btn-sm" style="margin-left: auto;">Reset
+                        Filters</button>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="grid-4 mb-4" id="stats-grid">
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Total Tickets</div>
+                        <div class="stat-value" id="stat-total">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Time Saved</div>
+                        <div class="stat-value" id="stat-time">0m</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Top Category</div>
+                        <div class="stat-value" id="stat-top-cat" style="font-size: 22px;">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Avg Confidence</div>
+                        <div class="stat-value" id="stat-confidence">0%</div>
+                    </div>
+                </div>
+
+                <!-- Two Column: Recent + Quick Start -->
+                <div class="dashboard-grid mb-4">
+                    <!-- Recent Tickets -->
+                    <div class="card" style="padding: 1.5rem; height:100%;">
+                        <div class="flex-between mb-3">
+                            <h3>Recent Tickets</h3>
+                            <a href="history.html" class="btn btn-ghost btn-sm" style="text-decoration: none;">View
+                                All</a>
+                        </div>
+                        <div id="recent-tickets">
+                            <div class="empty-state text-center" style="padding: 2rem;">
+                                <div style="font-weight: 600; margin-top: 8px;">No tickets analyzed for this selection
+                                </div>
+                                <div class="text-secondary mb-3" style="font-size: 14px;">Try changing your filters or
+                                    load sample demo data</div>
+                                <button id="load-demo-btn" class="btn btn-secondary btn-sm">Load 5 Sample
+                                    Tickets</button>
                             </div>
                         </div>
-                        <div class="glass-card-sm" style="display:flex;align-items:flex-start;gap:14px;padding:16px;">
-                            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;">2</div>
-                            <div style="flex:1;">
-                                <div style="font-weight:600;font-size:0.95rem;margin-bottom:4px;color:var(--text-primary);">Review analysis</div>
-                                <div class="text-secondary" style="font-size:0.85rem;line-height:1.4;">See category, priority, sentiment, and extracted info</div>
+                    </div>
+
+                    <!-- Quick Start Guide -->
+                    <div class="card" style="padding: 1.5rem; height:100%;">
+                        <h3 class="mb-3">Quick Start Guide</h3>
+                        <div style="display:flex; flex-direction:column; gap: 1rem;">
+                            <div class="card"
+                                style="display:flex; align-items:flex-start; gap: 14px; padding: 1rem; background: var(--bg-color);">
+                                <div
+                                    style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0;">
+                                    1</div>
+                                <div>
+                                    <div
+                                        style="font-weight:600; font-size:14px; margin-bottom:2px; color:var(--text-primary);">
+                                        Paste a ticket</div>
+                                    <div class="text-secondary" style="font-size:13px;">Copy customer email and paste
+                                        into New Ticket section.</div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="glass-card-sm" style="display:flex;align-items:flex-start;gap:14px;padding:16px;">
-                            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;">3</div>
-                            <div style="flex:1;">
-                                <div style="font-weight:600;font-size:0.95rem;margin-bottom:4px;color:var(--text-primary);">Copy & send</div>
-                                <div class="text-secondary" style="font-size:0.85rem;line-height:1.4;">Edit the AI draft, copy to clipboard, and send</div>
+                            <div class="card"
+                                style="display:flex; align-items:flex-start; gap: 14px; padding: 1rem; background: var(--bg-color);">
+                                <div
+                                    style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0;">
+                                    2</div>
+                                <div>
+                                    <div
+                                        style="font-weight:600; font-size:14px; margin-bottom:2px; color:var(--text-primary);">
+                                        Review analysis</div>
+                                    <div class="text-secondary" style="font-size:13px;">Inspect category, priority,
+                                        sentiment, and extracted info.</div>
+                                </div>
+                            </div>
+                            <div class="card"
+                                style="display:flex; align-items:flex-start; gap: 14px; padding: 1rem; background: var(--bg-color);">
+                                <div
+                                    style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0;">
+                                    3</div>
+                                <div>
+                                    <div
+                                        style="font-weight:600; font-size:14px; margin-bottom:2px; color:var(--text-primary);">
+                                        Copy & send</div>
+                                    <div class="text-secondary" style="font-size:13px;">Review the AI draft response,
+                                        copy to clipboard, and send.</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <footer class="footer" style="padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:60px;">
-        <div class="container text-center">
-            <p class="text-muted" style="font-size:0.85rem;">SupportGenie — AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
-        </div>
-    </footer>
+        <footer
+            style="padding: 24px 0; border-top: 1px solid var(--card-border); margin-top: auto; background: var(--surface);">
+            <div class="container text-center">
+                <p class="text-muted" style="font-size:14px;"> — Customer Support Ticket System for E-Commerce Teams</p>
+            </div>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/ai-engine.js"></script>
     <script src="../js/db.js"></script>
     <script>
-        // Auth guard
         if (typeof Auth !== 'undefined' && !Auth.requireAuth()) {
             window.location.href = '../login.html';
         }
         
-        // Set user avatar
         let user = { name: 'User', id: '1' };
         if (typeof Auth !== 'undefined') user = Auth.getCurrentUser() || user;
         
@@ -147,35 +290,45 @@
             document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
         }
         
-        // Logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await Auth.logout();
         });
         
-        // Toast utility
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if(!container) return;
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
+            toast.style.cssText = 'padding:12px 20px; background:var(--primary); color:#fff; border-radius:8px; margin-top:8px; font-size:14px;';
             toast.textContent = message;
             container.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('show'));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
     </script>
     <script>
-        (async function() {
-            // Set welcome name
+        (async function () {
             if (user && user.name) {
                 document.getElementById('welcome-name').textContent = user.name.split(' ')[0];
             }
 
+            const filterCat = document.getElementById('filter-category');
+            const filterPri = document.getElementById('filter-priority');
+            const filterSen = document.getElementById('filter-sentiment');
+            const filterSts = document.getElementById('filter-status');
+            const filterDate = document.getElementById('filter-date');
+            const resetBtn = document.getElementById('reset-filters-btn');
+
             async function renderDashboard() {
-                const stats = await TicketDB.getStats();
-                
+                const filters = {
+                    category: filterCat.value,
+                    priority: filterPri.value,
+                    sentiment: filterSen.value,
+                    status: filterSts.value,
+                    dateRange: filterDate.value
+                };
+
+                const stats = await TicketDB.getFilteredStats(filters);
+
                 document.getElementById('stat-total').textContent = stats.total;
                 document.getElementById('stat-time').textContent = stats.timeSaved + 'm';
                 document.getElementById('stat-confidence').textContent = stats.avgConfidence + '%';
@@ -185,38 +338,54 @@
 
                 if (stats.total > 0) {
                     recentContainer.innerHTML = '';
-                    stats.tickets.slice(0, 5).forEach(ticket => {
+                    stats.tickets.slice(0, 6).forEach(ticket => {
                         const div = document.createElement('div');
-                        div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);';
-                        const categoryClass = 'badge-' + ticket.category.toLowerCase().replace(/[\s\/]/g, '-').replace('return-refund','return');
+                        div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--card-border);';
                         div.innerHTML = `
-                            <span style="font-size:0.8rem;color:rgba(255,255,255,0.4);min-width:70px;">${ticket.date}</span>
-                            <span class="badge ${categoryClass}">${ticket.category}</span>
-                            <span style="flex:1;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ticket.snippet}</span>
-                            <span class="text-secondary" style="font-size:0.8rem;">⏱️ ${ticket.timeSaved}m</span>
+                            <span style="font-size:12px;color:var(--text-secondary);min-width:70px;">${ticket.date}</span>
+                            <span class="badge badge-purple">${ticket.category}</span>
+                            <span style="flex:1;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ticket.snippet}</span>
+                            <span class="badge badge-orange" style="font-size:11px;">${ticket.priority}</span>
                         `;
                         recentContainer.appendChild(div);
                     });
                 } else {
                     recentContainer.innerHTML = `
-                        <div class="empty-state" style="padding:30px;text-align:center;">
-                            <div class="icon" style="font-size:2.5rem;">📭</div>
-                            <div class="title" style="margin-top:8px;font-weight:600;">No tickets analyzed yet</div>
-                            <div class="description text-secondary" style="font-size:0.85rem;margin-bottom:16px;">Analyze your first ticket or load sample demo data</div>
-                            <button id="load-demo-btn" class="btn btn-secondary btn-sm">⚡ Load 5 Sample Tickets</button>
+                        <div class="empty-state text-center" style="padding: 2rem;">
+                            <div style="font-weight:600;">No tickets analyzed for this selection</div>
+                            <div class="text-secondary mb-3" style="font-size:14px;">Try changing your filters or load sample demo data</div>
+                            <button id="load-demo-btn" class="btn btn-secondary btn-sm">Load 5 Sample Tickets</button>
                         </div>
                     `;
-                    document.getElementById('load-demo-btn').addEventListener('click', async () => {
-                        showToast('Loading 5 sample tickets...');
-                        await TicketDB.loadDemoData();
-                        await renderDashboard();
-                        showToast('5 sample tickets loaded! 🎉');
-                    });
+                    const demoBtn = document.getElementById('load-demo-btn');
+                    if (demoBtn) {
+                        demoBtn.addEventListener('click', async () => {
+                            showToast('Loading 5 sample tickets...');
+                            await TicketDB.loadDemoData();
+                            await renderDashboard();
+                            showToast('5 sample tickets loaded!');
+                        });
+                    }
                 }
             }
+
+            [filterCat, filterPri, filterSen, filterSts, filterDate].forEach(el => {
+                el.addEventListener('change', renderDashboard);
+            });
+
+            resetBtn.addEventListener('click', () => {
+                filterCat.value = 'all';
+                filterPri.value = 'all';
+                filterSen.value = 'all';
+                filterSts.value = 'all';
+                filterDate.value = 'all';
+                renderDashboard();
+                showToast('Filters reset.');
+            });
 
             await renderDashboard();
         })();
     </script>
 </body>
+
 </html>

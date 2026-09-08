@@ -1,5 +1,5 @@
 -- ============================================================
--- SupportGenie Database Schema for Supabase
+--  Database Schema for Supabase
 -- Run this ONCE in your Supabase SQL Editor
 -- Dashboard → SQL Editor → New query → Paste → Run
 -- ============================================================

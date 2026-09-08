@@ -1,110 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Ticket | SupportGenie</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>New Ticket | </title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23753FC9'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>SG</text></svg>">
     <link rel="stylesheet" href="../css/styles.css">
     <script src="../js/theme.js"></script>
     <style>
-        .nav-link { text-decoration: none; color: var(--text-secondary); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-        .nav-link:hover { color: var(--text-primary); }
-        .nav-link.active { color: var(--text-primary); background: var(--btn-secondary-bg); }
-        .char-counter { position: absolute; bottom: 12px; right: 16px; font-size: 0.8rem; pointer-events: none; }
-        .ticket-textarea { min-height: 220px; }
-        .processing-steps .processing-step { display: flex; align-items: center; gap: 12px; padding: 8px 0; opacity: 0; transform: translateX(-10px); transition: all 0.4s ease; }
-        .processing-step.active { opacity: 1; transform: translateX(0); }
-        .processing-step.done .icon { color: var(--success); }
+        .char-counter {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .char-counter.warning {
+            color: var(--error);
+            font-weight: bold;
+        }
+
+        .ticket-textarea {
+            min-height: 220px;
+        }
+
+        .processing-steps .processing-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .processing-step.active {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        .processing-step.done {
+            opacity: 1;
+            color: var(--success);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .error-card {
+            background: var(--error-bg);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+        }
     </style>
 </head>
-<body>
-    <div id="toast-container" class="toast-container"></div>
-    
-    <!-- Navbar -->
-    <nav class="navbar glass-card">
-        <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
-            <a href="dashboard.html" class="logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
-                <span style="font-size:1.5rem;">🧞‍♂️</span>
-                <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">SupportGenie</span>
-            </a>
-            <div class="nav-links" style="display:flex;gap:8px;align-items:center;">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="new-ticket.html" class="nav-link active">New Ticket</a>
-                <a href="history.html" class="nav-link">History</a>
-                <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-left:8px;">☀️</button>
-                <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
-                    <div class="avatar" id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d2ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;"></div>
-                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <main class="main-content container">
-        <div class="animate-fade-in-up">
-            <div class="glass-card">
-                <h2 class="mb-1">Analyze New Ticket</h2>
-                <p class="subtitle mb-4">Paste the customer email below to get AI-powered insights and a draft response.</p>
-                
-                <div class="form-group">
-                    <label for="ticket-input">Customer Email / Ticket Content</label>
-                    <div style="position:relative;">
-                        <textarea id="ticket-input" class="form-input ticket-textarea" placeholder="Paste customer message here..."></textarea>
-                        <span id="char-count" class="char-counter text-muted">0 characters</span>
+<body>
+    <div class="page-wrapper">
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="container flex-between" style="height:64px; align-items:center;">
+                <a href="dashboard.html" class="logo">
+                    <svg class="logo-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                    <span class="brand-text" style="font-size:1.25rem;"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="dashboard.html" class="nav-item">Dashboard</a>
+                    <a href="new-ticket.html" class="nav-item active">New Ticket</a>
+                    <a href="history.html" class="nav-item">History</a>
+                    <button class="theme-toggle-btn" aria-label="Toggle Theme">Dark Theme</button>
+                    <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
                     </div>
                 </div>
+            </div>
+        </nav>
 
-                <div class="options-row mb-3">
-                    <div class="form-group" style="margin-bottom:0;">
+        <main class="main-content container" style="margin-top: 2rem;">
+            <div class="animate-fade-in-up">
+                <div class="card" style="padding: 2rem;">
+                    <h2 class="mb-1">Analyze New Ticket</h2>
+                    <p class="text-secondary mb-4">Paste customer email below to obtain classification, priority, and a
+                        draft response.</p>
+
+                    <div id="validation-alert" class="form-error hidden mb-3"></div>
+
+                    <div class="form-group">
+                        <label for="ticket-input">Customer Email / Ticket Content</label>
+                        <div style="position:relative;">
+                            <textarea id="ticket-input" class="form-input ticket-textarea" maxlength="5000"
+                                placeholder="Paste customer message here..."></textarea>
+                            <span id="char-count" class="char-counter text-muted">0 / 5000 characters</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
                         <label for="tone-select">Response Tone</label>
-                        <select id="tone-select" class="form-input">
+                        <select id="tone-select" class="form-input" style="max-width: 300px;">
                             <option value="professional">Professional</option>
                             <option value="friendly" selected>Friendly</option>
                             <option value="empathetic">Empathetic</option>
                         </select>
                     </div>
-                </div>
 
-                <div class="sample-bar mb-4">
-                    <span class="text-muted" style="font-size:0.85rem;">Try a sample:</span>
-                    <div id="sample-buttons" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-                </div>
+                    <div class="mb-4">
+                        <div class="text-secondary mb-2" style="font-size:14px; font-weight: 500;">Try a sample ticket:
+                        </div>
+                        <div id="sample-buttons" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                    </div>
 
-                <button id="analyze-btn" class="btn btn-primary btn-block btn-lg">
-                    <span class="btn-text">✨ Analyze Ticket</span>
-                    <span class="spinner hidden"></span>
-                </button>
+                    <button id="analyze-btn" class="btn btn-primary btn-block btn-lg">
+                        <span class="btn-text">Analyze Ticket</span>
+                        <span class="spinner hidden">Processing...</span>
+                    </button>
 
-                <!-- Processing Steps (hidden initially) -->
-                <div id="processing-steps" class="processing-steps hidden" style="margin-top:20px;">
-                    <div class="processing-step" data-step="1"><span class="icon">⏳</span><span class="text">Classifying issue type...</span></div>
-                    <div class="processing-step" data-step="2"><span class="icon">⏳</span><span class="text">Analyzing sentiment & urgency...</span></div>
-                    <div class="processing-step" data-step="3"><span class="icon">⏳</span><span class="text">Extracting key information...</span></div>
-                    <div class="processing-step" data-step="4"><span class="icon">⏳</span><span class="text">Generating draft response...</span></div>
+                    <!-- Processing Steps -->
+                    <div id="processing-steps" class="processing-steps hidden card"
+                        style="margin-top:20px; padding: 1.5rem; background: var(--bg-color);">
+                        <div class="processing-step" data-step="1"><span class="step-indicator">[1]</span> <span
+                                class="text">Classifying issue type & sentiment...</span></div>
+                        <div class="processing-step" data-step="2"><span class="step-indicator">[2]</span> <span
+                                class="text">Evaluating priority reasoning & SLA...</span></div>
+                        <div class="processing-step" data-step="3"><span class="step-indicator">[3]</span> <span
+                                class="text">Extracting entity info & checking PII...</span></div>
+                        <div class="processing-step" data-step="4"><span class="step-indicator">[4]</span> <span
+                                class="text">Generating safe draft response...</span></div>
+                    </div>
+
+                    <!-- Error Fallback Card -->
+                    <div id="error-fallback-card" class="error-card hidden">
+                        <h4 style="margin-bottom: 0.5rem; color: var(--error);">Analysis Temporarily Unavailable</h4>
+                        <p id="error-fallback-msg"
+                            style="font-size: 14px; margin-bottom: 1rem; color: var(--text-primary);">Something went
+                            wrong while analyzing the ticket. Your input has been saved locally.</p>
+                        <button id="retry-btn" class="btn btn-secondary btn-sm">Retry Analysis</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <footer class="footer" style="padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:60px;">
-        <div class="container text-center">
-            <p class="text-muted" style="font-size:0.85rem;">SupportGenie — AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
-        </div>
-    </footer>
+        <footer
+            style="padding: 24px 0; border-top: 1px solid var(--card-border); margin-top: auto; background: var(--surface);">
+            <div class="container text-center">
+                <p class="text-muted" style="font-size:14px;"> — Customer Support Ticket System for E-Commerce Teams</p>
+            </div>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/ai-engine.js"></script>
     <script src="../js/db.js"></script>
     <script>
-        // Auth guard
         if (typeof Auth !== 'undefined' && !Auth.requireAuth()) {
             window.location.href = '../login.html';
         }
         
-        // Set user avatar
         let user = { name: 'User', id: '1' };
         if (typeof Auth !== 'undefined') user = Auth.getCurrentUser() || user;
         
@@ -112,23 +183,19 @@
             document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
         }
         
-        // Logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await Auth.logout();
         });
         
-        // Toast utility
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if(!container) return;
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
+            toast.style.cssText = 'padding:12px 20px; background:var(--primary); color:#fff; border-radius:8px; margin-top:8px; font-size:14px;';
             toast.textContent = message;
             container.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('show'));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
     </script>
     <script>
@@ -136,93 +203,156 @@
         const charCount = document.getElementById('char-count');
         const analyzeBtn = document.getElementById('analyze-btn');
         const sampleBtns = document.getElementById('sample-buttons');
+        const validationAlert = document.getElementById('validation-alert');
+        const fallbackCard = document.getElementById('error-fallback-card');
+        const fallbackMsg = document.getElementById('error-fallback-msg');
+        const retryBtn = document.getElementById('retry-btn');
 
-        // Populate sample buttons
+        let isAnalyzing = false;
+        let lastAnalyzedText = '';
+
         if (typeof SAMPLE_TICKETS !== 'undefined') {
             SAMPLE_TICKETS.forEach(sample => {
                 const btn = document.createElement('button');
-                btn.className = 'btn btn-ghost btn-sm';
-                btn.style.cssText = 'border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:6px 14px;font-size:0.8rem;transition:all 0.2s ease;';
+                btn.className = 'btn btn-tertiary btn-sm';
                 btn.textContent = sample.label;
                 btn.addEventListener('click', () => {
+                    if (isAnalyzing) return;
                     document.querySelectorAll('#sample-buttons button').forEach(b => {
-                        b.style.borderColor = 'rgba(255,255,255,0.15)';
-                        b.style.background = 'transparent';
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-tertiary');
                     });
-                    btn.style.borderColor = '#00d2ff';
-                    btn.style.background = 'rgba(0,210,255,0.1)';
+                    btn.classList.remove('btn-tertiary');
+                    btn.classList.add('btn-primary');
                     ticketInput.value = sample.text;
-                    charCount.textContent = sample.text.length + ' characters';
+                    updateCharCount();
+                    validationAlert.classList.add('hidden');
+                    fallbackCard.classList.add('hidden');
                     showToast(`Loaded sample: ${sample.label}`);
                 });
                 sampleBtns.appendChild(btn);
             });
         }
 
-        // Char count
+        function updateCharCount() {
+            const len = ticketInput.value.length;
+            charCount.textContent = `${len} / 5000 characters`;
+            if (len >= 4800) {
+                charCount.classList.add('warning');
+            } else {
+                charCount.classList.remove('warning');
+            }
+        }
+
         ticketInput.addEventListener('input', () => {
-            charCount.textContent = ticketInput.value.length + ' characters';
+            updateCharCount();
+            validationAlert.classList.add('hidden');
         });
 
-        // Ctrl+Enter shortcut
         ticketInput.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') analyzeBtn.click();
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                if (!isAnalyzing) runAnalysis();
+            }
         });
 
-        // Analyze
         analyzeBtn.addEventListener('click', () => {
-            const text = ticketInput.value.trim();
-            if (!text) { showToast('Please paste a customer ticket first.', 'error'); return; }
-            if (text.length < 5) { showToast('Ticket text is too short.', 'error'); return; }
-            
-            // Show loading
+            if (!isAnalyzing) runAnalysis();
+        });
+
+        retryBtn.addEventListener('click', () => {
+            fallbackCard.classList.add('hidden');
+            runAnalysis();
+        });
+
+        async function runAnalysis() {
+            if (isAnalyzing) return;
+
+            const rawText = ticketInput.value;
+            const ai = new AI();
+            const validation = ai.validateInput(rawText);
+
+            if (!validation.valid) {
+                validationAlert.textContent = validation.error;
+                validationAlert.classList.remove('hidden');
+                return;
+            }
+
+            // Duplicate ticket check during session
+            if (rawText.trim() === lastAnalyzedText) {
+                showToast('This ticket content was already analyzed in your current session.', 'error');
+            }
+            lastAnalyzedText = rawText.trim();
+
+            isAnalyzing = true;
+            validationAlert.classList.add('hidden');
+            fallbackCard.classList.add('hidden');
+
             analyzeBtn.querySelector('.btn-text').classList.add('hidden');
             analyzeBtn.querySelector('.spinner').classList.remove('hidden');
             analyzeBtn.disabled = true;
-            
-            // Show processing steps
+
             const stepsContainer = document.getElementById('processing-steps');
             const steps = stepsContainer.querySelectorAll('.processing-step');
             stepsContainer.classList.remove('hidden');
-            steps.forEach(s => { s.classList.remove('active', 'done'); s.querySelector('.icon').textContent = '⏳'; });
-            
+            steps.forEach(s => { s.classList.remove('active', 'done'); });
+
             let delay = 0;
             steps.forEach((step, i) => {
                 setTimeout(() => {
                     step.classList.add('active');
-                    if (i > 0) { steps[i-1].classList.add('done'); steps[i-1].querySelector('.icon').textContent = '✅'; }
+                    if (i > 0) { steps[i - 1].classList.add('done'); }
                 }, delay);
-                delay += 400;
+                delay += 300;
             });
-            
-            setTimeout(() => {
+
+            setTimeout(async () => {
                 steps[steps.length - 1].classList.add('done');
-                steps[steps.length - 1].querySelector('.icon').textContent = '✅';
-                
-                // Run AI
-                if (typeof SupportGenieAI !== 'undefined') {
-                    const ai = new SupportGenieAI();
+
+                try {
                     const tone = document.getElementById('tone-select').value;
-                    const analysis = ai.analyze(text);
+                    const analysis = ai.analyze(rawText);
+
+                    if (!analysis || !analysis.valid) {
+                        throw new Error(analysis.error || 'Failed to process ticket content.');
+                    }
+
                     const draft = ai.generateDraft(analysis, user.storeName || 'Our Store', tone);
-                    
-                    // Store in sessionStorage for the analysis page
+
                     sessionStorage.setItem('sg_current_analysis', JSON.stringify(analysis));
                     sessionStorage.setItem('sg_current_draft', draft);
                     sessionStorage.setItem('sg_current_tone', tone);
-                    
-                    // Navigate to analysis page
+
                     setTimeout(() => {
                         window.location.href = 'analysis.html';
-                    }, 400);
-                } else {
-                    showToast('AI engine not loaded', 'error');
+                    }, 300);
+
+                } catch (err) {
+                    console.error('AI Analysis Exception:', err);
+                    isAnalyzing = false;
                     analyzeBtn.querySelector('.btn-text').classList.remove('hidden');
                     analyzeBtn.querySelector('.spinner').classList.add('hidden');
                     analyzeBtn.disabled = false;
+                    stepsContainer.classList.add('hidden');
+
+                    // Save ticket as failed state so data is not lost
+                    await TicketDB.save({
+                        category: 'Other',
+                        priority: 'High',
+                        sentiment: 'Neutral',
+                        confidence: 0,
+                        status: 'Failed',
+                        ticketText: rawText,
+                        snippet: rawText.substring(0, 80) + '...',
+                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    });
+
+                    fallbackMsg.textContent = 'Analysis temporarily unavailable. Your ticket has been saved safely. Please try again.';
+                    fallbackCard.classList.remove('hidden');
+                    showToast('Analysis error occurred. Ticket saved.', 'error');
                 }
-            }, delay + 400);
-        });
+            }, delay + 300);
+        }
     </script>
 </body>
+
 </html>

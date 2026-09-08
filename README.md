@@ -1,9 +1,9 @@
-# 🧞‍♂️ SupportGenie AI — Case Study
+# 🧞‍♂️  AI — Case Study
 
 **Customer Support Ticket Responder for Small E-Commerce Teams**
 
-> 🌐 **Live Prototype**: [https://supportgenieai.netlify.app](https://supportgenieai.netlify.app)  
-> 💻 **Source Code**: [https://github.com/princeidrisi24-code/SupportGenieAi](https://github.com/princeidrisi24-code/SupportGenieAi)  
+> 🌐 **Live Prototype**: [https://ai.netlify.app](https://ai.netlify.app)  
+> 💻 **Source Code**: [https://github.com/princeidrisi24-code/Ai](https://github.com/princeidrisi24-code/Ai)  
 > 🗄️ **Database & Auth**: Powered by **Supabase** (Postgres + Row Level Security)  
 > 📄 **Sprint Context**: 5-Day AI-Native Product Sprint
 
@@ -127,7 +127,7 @@ This was a deliberate design choice. Two specific situations trigger warnings:
 
 ### What the AI actually does
 
-I want to be upfront about this: SupportGenie does not call ChatGPT or any external LLM API. I built a **rule-based classification engine** that runs entirely in the browser using JavaScript. Here's why:
+I want to be upfront about this:  does not call ChatGPT or any external LLM API. I built a **rule-based classification engine** that runs entirely in the browser using JavaScript. Here's why:
 
 - **Speed.** API calls add 1 to 3 seconds of latency. Rule-based scoring runs in under 100ms.
 - **Cost.** An LLM API would cost $0.01 to $0.05 per ticket at scale. The local engine costs nothing per ticket.
@@ -178,7 +178,7 @@ This template approach was a deliberate trade-off: it gives up the flexibility o
 
 ### Customer value
 
-The core value is **time savings**. If a merchant currently spends 14 minutes per ticket and SupportGenie brings that down to 1.5 minutes, that's 12.5 minutes saved per ticket. At 30 tickets per day, that's over 6 hours saved daily.
+The core value is **time savings**. If a merchant currently spends 14 minutes per ticket and  brings that down to 1.5 minutes, that's 12.5 minutes saved per ticket. At 30 tickets per day, that's over 6 hours saved daily.
 
 For a solo founder paying themselves $20/hour equivalent, that's roughly $120/day or $3,600/month in recovered time — time they can spend on product development, marketing, or just not working until midnight.
 
@@ -264,7 +264,7 @@ If this were to launch as a real product, here's how I'd validate it over 60 day
 
 ### Phase 1: Weeks 1-2 (Closed alpha with 10 stores)
 
-Recruit 10 small Shopify stores willing to use SupportGenie alongside their existing workflow. They'd process tickets through both their manual process and SupportGenie, letting me compare side by side.
+Recruit 10 small Shopify stores willing to use  alongside their existing workflow. They'd process tickets through both their manual process and , letting me compare side by side.
 
 **What I'd measure:**
 - How often do merchants edit the draft before sending? (Target: edits needed on less than 20% of text)
@@ -308,7 +308,7 @@ Based on the data, make a clear call:
 
 ### For engineering
 - The codebase is vanilla HTML/CSS/JS with no build step. Everything runs from static files on Netlify.
-- `js/ai-engine.js` contains the full classification engine. It's a single class (`SupportGenieAI`) with two main methods: `analyze(text)` and `generateDraft(analysis, storeName, tone)`.
+- `js/ai-engine.js` contains the full classification engine. It's a single class (`AI`) with two main methods: `analyze(text)` and `generateDraft(analysis, storeName, tone)`.
 - `js/db.js` handles Supabase operations with a localStorage fallback. If the Supabase credentials aren't set, the app still works fully offline.
 - `js/auth.js` manages authentication. Currently uses localStorage-based sessions; Supabase Auth is wired in but can fall back gracefully.
 - The theme system (`js/theme.js`) supports light and dark modes. All colors use CSS custom properties.
@@ -333,7 +333,7 @@ Based on the data, make a clear call:
 ## 📂 Project Structure
 
 ```
-SupportGenie/
+/
 ├── index.html              # Marketing Landing Page
 ├── login.html              # User Login Screen
 ├── signup.html             # User Registration Screen
@@ -362,12 +362,12 @@ SupportGenie/
 ## 🚀 Quick Setup & Installation
 
 ### Option 1: Live Deployment (Recommended)
-Simply visit [https://supportgenieai.netlify.app](https://supportgenieai.netlify.app).
+Simply visit [https://ai.netlify.app](https://ai.netlify.app).
 
 ### Option 2: Local Setup
 1. Clone this repository:
    ```bash
-   git clone https://github.com/princeidrisi24-code/SupportGenieAi.git
+   git clone https://github.com/princeidrisi24-code/Ai.git
    ```
 2. Open `index.html` in any web browser or start a simple local server:
    ```bash

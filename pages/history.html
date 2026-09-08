@@ -1,96 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History & Metrics | SupportGenie</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>History & Metrics | </title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23753FC9'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>SG</text></svg>">
     <link rel="stylesheet" href="../css/styles.css">
     <script src="../js/theme.js"></script>
     <style>
-        .nav-link { text-decoration: none; color: var(--text-secondary); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-        .nav-link:hover { color: var(--text-primary); }
-        .nav-link.active { color: var(--text-primary); background: var(--btn-secondary-bg); }
-        .chart-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .chart-bar-label { width: 120px; font-size: 0.85rem; color: var(--text-secondary); flex-shrink: 0; }
-        .chart-bar-track { flex: 1; height: 28px; background: var(--track-bg); border-radius: 6px; overflow: hidden; }
-        .chart-bar-fill { height: 100%; background: linear-gradient(135deg, #00d2ff, #7b2ff7); border-radius: 6px; transition: width 1s ease-out; }
-        .chart-bar-value { width: 45px; text-align: right; font-weight: 600; font-size: 0.9rem; }
+        .chart-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .chart-bar-label {
+            width: 140px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .chart-bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--bg-color);
+            border-radius: var(--radius-df);
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: var(--radius-df);
+            transition: width 1s ease-out;
+        }
+
+        .chart-bar-value {
+            width: 45px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
     </style>
 </head>
+
 <body>
-    <div id="toast-container" class="toast-container"></div>
-    
-    <!-- Navbar -->
-    <nav class="navbar glass-card">
-        <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
-            <a href="dashboard.html" class="logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
-                <span style="font-size:1.5rem;">🧞‍♂️</span>
-                <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">SupportGenie</span>
-            </a>
-            <div class="nav-links" style="display:flex;gap:8px;align-items:center;">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="new-ticket.html" class="nav-link">New Ticket</a>
-                <a href="history.html" class="nav-link active">History</a>
-                <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-left:8px;">☀️</button>
-                <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
-                    <div class="avatar" id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d2ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;"></div>
-                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+    <div class="page-wrapper">
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="container flex-between" style="height:64px; align-items:center;">
+                <a href="dashboard.html" class="logo">
+                    <svg class="logo-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                    <span class="brand-text" style="font-size:1.25rem;"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="dashboard.html" class="nav-item">Dashboard</a>
+                    <a href="new-ticket.html" class="nav-item">New Ticket</a>
+                    <a href="history.html" class="nav-item active">History</a>
+                    <button class="theme-toggle-btn" aria-label="Toggle Theme">Dark Theme</button>
+                    <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <main class="main-content container">
-        <div class="animate-fade-in-up">
-            <div class="flex-between mb-4" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-                <h2>History & Metrics</h2>
-                <div style="display:flex;gap:10px;">
-                    <button id="export-btn" class="btn btn-secondary btn-sm">📥 Export CSV</button>
-                    <button id="clear-btn" class="btn btn-danger btn-sm">🗑️ Clear All</button>
+        <main class="main-content container" style="margin-top: 2rem;">
+            <div class="animate-fade-in-up">
+                <div class="flex-between mb-4" style="flex-wrap:wrap; gap:12px;">
+                    <h2>History & Metrics</h2>
+                    <div style="display:flex; gap:10px;">
+                        <button id="export-btn" class="btn btn-secondary btn-sm">Export CSV</button>
+                        <button id="clear-btn" class="btn btn-tertiary btn-sm"
+                            style="color: var(--error); border-color: var(--error);">Clear All</button>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid-4 mb-4">
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Total Tickets</div>
+                        <div class="stat-value" id="h-total">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Time Saved</div>
+                        <div class="stat-value" id="h-time">0m</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Top Category</div>
+                        <div class="stat-value" id="h-top" style="font-size: 22px;">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-secondary" style="font-size: 14px;">Avg Confidence</div>
+                        <div class="stat-value" id="h-conf">0%</div>
+                    </div>
+                </div>
+
+                <!-- Category Distribution Chart -->
+                <div class="card mb-4" style="padding: 1.5rem;">
+                    <h3 class="mb-3">Category Distribution</h3>
+                    <div id="category-chart"></div>
+                </div>
+
+                <!-- Ticket History List -->
+                <div class="card" style="padding: 1.5rem;">
+                    <h3 class="mb-3">All Tickets</h3>
+                    <div id="tickets-list"></div>
                 </div>
             </div>
+        </main>
 
-            <!-- Stats -->
-            <div class="grid-4 mb-4">
-                <div class="stat-card glass-card-sm"><div class="stat-icon">🎫</div><div class="stat-number gradient-text" id="h-total">0</div><div class="stat-label">Total Tickets</div></div>
-                <div class="stat-card glass-card-sm"><div class="stat-icon">⏱️</div><div class="stat-number gradient-text" id="h-time">0m</div><div class="stat-label">Time Saved</div></div>
-                <div class="stat-card glass-card-sm"><div class="stat-icon">📊</div><div class="stat-number gradient-text" id="h-top">—</div><div class="stat-label">Top Category</div></div>
-                <div class="stat-card glass-card-sm"><div class="stat-icon">🎯</div><div class="stat-number gradient-text" id="h-conf">0%</div><div class="stat-label">Avg Confidence</div></div>
+        <footer
+            style="padding: 24px 0; border-top: 1px solid var(--card-border); margin-top: auto; background: var(--surface);">
+            <div class="container text-center">
+                <p class="text-muted" style="font-size:14px;"> — Customer Support Ticket System for E-Commerce Teams</p>
             </div>
-
-            <!-- Category Distribution Chart -->
-            <div class="glass-card mb-4">
-                <h3 class="mb-3">Category Distribution</h3>
-                <div id="category-chart"></div>
-            </div>
-
-            <!-- Ticket History List -->
-            <div class="glass-card">
-                <h3 class="mb-3">All Tickets</h3>
-                <div id="tickets-list"></div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer" style="padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:60px;">
-        <div class="container text-center">
-            <p class="text-muted" style="font-size:0.85rem;">SupportGenie — AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/ai-engine.js"></script>
     <script src="../js/db.js"></script>
     <script>
-        // Auth guard
         if (typeof Auth !== 'undefined' && !Auth.requireAuth()) {
             window.location.href = '../login.html';
         }
         
-        // Set user avatar
         let user = { name: 'User', id: '1' };
         if (typeof Auth !== 'undefined') user = Auth.getCurrentUser() || user;
         
@@ -98,48 +156,55 @@
             document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
         }
         
-        // Logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await Auth.logout();
         });
         
-        // Toast utility
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if(!container) return;
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
+            toast.style.cssText = 'padding:12px 20px; background:var(--primary); color:#fff; border-radius:8px; margin-top:8px; font-size:14px;';
             toast.textContent = message;
             container.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('show'));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
     </script>
     <script>
-        (async function() {
+        (async function () {
             let history = await TicketDB.loadAll();
+            let currentStatusFilter = 'all';
+
+            function getStatusBadge(ticket) {
+                const status = ticket.status || (ticket.needsHumanReview ? 'Human Review Required' : 'AI Analyzed');
+                let colorClass = 'badge-purple';
+                if (status === 'Human Review Required') colorClass = 'badge-orange';
+                else if (status === 'Resolved' || status === 'Sent') colorClass = 'badge-green';
+                else if (status === 'Reopened') colorClass = 'badge-yellow';
+                else if (status === 'Failed') colorClass = 'badge-red';
+                else if (status === 'Response Drafted') colorClass = 'badge-blue';
+                return `<span class="badge ${colorClass}" style="font-size:11px;">${status}</span>`;
+            }
 
             function renderHistory() {
                 const listEl = document.getElementById('tickets-list');
                 const chartEl = document.getElementById('category-chart');
-                
+
                 if (history.length === 0) {
                     listEl.innerHTML = `
-                        <div class="empty-state" style="padding:30px;text-align:center;">
-                            <div class="icon" style="font-size:2.5rem;">📭</div>
-                            <div class="title" style="margin-top:8px;font-weight:600;">No tickets analyzed yet</div>
-                            <div class="description text-secondary" style="font-size:0.85rem;margin-bottom:16px;">Go to <a href="new-ticket.html" style="color:#00d2ff;">New Ticket</a> or load sample tickets</div>
-                            <button id="h-demo-btn" class="btn btn-secondary btn-sm">⚡ Load 5 Sample Tickets</button>
+                        <div class="empty-state text-center" style="padding: 2rem;">
+                            <div style="font-weight: 600;">No tickets analyzed yet</div>
+                            <div class="text-secondary mb-3" style="font-size:14px;">Go to <a href="new-ticket.html" style="color: var(--primary);">New Ticket</a> or load sample tickets</div>
+                            <button id="h-demo-btn" class="btn btn-secondary btn-sm">Load 5 Sample Tickets</button>
                         </div>
                     `;
-                    chartEl.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="description">Not enough data for chart</div></div>';
+                    chartEl.innerHTML = '<div class="text-secondary text-center" style="padding: 1rem;">Not enough data for chart</div>';
                     document.getElementById('h-total').textContent = '0';
                     document.getElementById('h-time').textContent = '0m';
                     document.getElementById('h-top').textContent = '—';
                     document.getElementById('h-conf').textContent = '0%';
-                    
+
                     const btn = document.getElementById('h-demo-btn');
                     if (btn) {
                         btn.addEventListener('click', async () => {
@@ -147,29 +212,29 @@
                             await TicketDB.loadDemoData();
                             history = await TicketDB.loadAll();
                             renderHistory();
-                            showToast('Sample tickets loaded! 🎉');
+                            showToast('Sample tickets loaded!');
                         });
                     }
                     return;
                 }
-                
+
                 let totalTime = 0, confSum = 0, catCounts = {};
                 history.forEach(h => {
                     totalTime += (h.timeSaved || 0);
                     confSum += (h.confidence || 0);
                     catCounts[h.category] = (catCounts[h.category] || 0) + 1;
                 });
-                
+
                 document.getElementById('h-total').textContent = history.length;
                 document.getElementById('h-time').textContent = totalTime + 'm';
                 document.getElementById('h-conf').textContent = Math.round(confSum / history.length) + '%';
-                
+
                 let topCat = '—', maxC = 0;
                 for (let [cat, count] of Object.entries(catCounts)) {
                     if (count > maxC) { maxC = count; topCat = cat; }
                 }
                 document.getElementById('h-top').textContent = topCat;
-                
+
                 chartEl.innerHTML = '';
                 const sorted = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
                 sorted.forEach(([cat, count]) => {
@@ -183,22 +248,98 @@
                     `;
                     chartEl.appendChild(row);
                 });
-                
+
+                let filteredList = history;
+                if (currentStatusFilter !== 'all') {
+                    filteredList = history.filter(t => (t.status || '').toLowerCase() === currentStatusFilter.toLowerCase() ||
+                        (currentStatusFilter === 'human_review' && t.needsHumanReview));
+                }
+
                 listEl.innerHTML = '';
-                history.forEach((ticket) => {
+                if (filteredList.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="empty-state text-center" style="padding: 2rem; color: var(--text-secondary);">
+                            No tickets match the selected status filter.
+                        </div>
+                    `;
+                    return;
+                }
+
+                filteredList.forEach((ticket) => {
                     const div = document.createElement('div');
-                    div.className = 'glass-card-sm mb-2';
-                    div.style.cssText = 'display:grid;grid-template-columns:80px auto 1fr auto auto;align-items:center;gap:12px;padding:14px 16px;';
-                    const catClass = 'badge-' + ticket.category.toLowerCase().replace(/[\s\/]/g, '-').replace('return-refund','return');
-                    const priClass = 'badge-' + ticket.priority.toLowerCase();
+                    div.className = 'card mb-2';
+                    div.style.cssText = 'display:grid; grid-template-columns:80px 140px 1fr 100px 140px auto; align-items:center; gap:12px; padding:12px 16px;';
+
+                    const canReopen = ticket.status === 'Resolved' || ticket.status === 'Sent';
+
                     div.innerHTML = `
-                        <span class="text-muted" style="font-size:0.8rem;">${ticket.date}</span>
-                        <span class="badge ${catClass}">${ticket.category}</span>
-                        <span style="font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ticket.snippet}</span>
-                        <span class="badge ${priClass}" style="font-size:0.75rem;">${ticket.priority}</span>
-                        <span class="text-success" style="font-size:0.8rem;font-weight:500;">⏱️ ${ticket.timeSaved}m</span>
+                        <span class="text-secondary" style="font-size:12px;">${ticket.date}</span>
+                        <span class="badge badge-purple" style="font-size:12px; text-overflow:ellipsis; overflow:hidden;">${ticket.category}</span>
+                        <span style="font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${ticket.snippet || ''}">${ticket.snippet}</span>
+                        <span class="badge badge-orange" style="font-size:12px;" title="${ticket.priorityReason || ''}">${ticket.priority}</span>
+                        <div>${getStatusBadge(ticket)}</div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-ghost btn-sm view-btn" data-id="${ticket.id}" style="padding:4px 8px; font-size:12px;">View</button>
+                            ${canReopen ? `<button class="btn btn-tertiary btn-sm reopen-btn" data-id="${ticket.id}" style="padding:4px 8px; font-size:12px;">Reopen</button>` : ''}
+                        </div>
                     `;
                     listEl.appendChild(div);
+                });
+
+                // Event Listeners for action buttons
+                listEl.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        const ticket = history.find(t => String(t.id) === String(id));
+                        if (ticket) {
+                            TicketDB.saveCurrent(ticket);
+                            window.location.href = 'analysis.html';
+                        }
+                    });
+                });
+
+                listEl.querySelectorAll('.reopen-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        const updated = await TicketDB.reopenTicket(id);
+                        if (updated) {
+                            showToast('Ticket reopened successfully');
+                            history = await TicketDB.loadAll();
+                            renderHistory();
+                        }
+                    });
+                });
+            }
+
+            // Status Filter UI Injection
+            const listCardHeader = document.querySelector('#tickets-list').parentElement;
+            if (listCardHeader) {
+                const headerFlex = document.createElement('div');
+                headerFlex.className = 'flex-between mb-3';
+                headerFlex.style.cssText = 'align-items:center; flex-wrap:wrap; gap:12px;';
+                headerFlex.innerHTML = `
+                    <h3 style="margin:0;">All Tickets</h3>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <label style="font-size:13px; color:var(--text-secondary);">Status Filter:</label>
+                        <select id="h-status-filter" class="form-control" style="width: auto; padding: 4px 10px; font-size: 13px;">
+                            <option value="all">All Statuses</option>
+                            <option value="AI Analyzed">AI Analyzed</option>
+                            <option value="human_review">Human Review Required</option>
+                            <option value="Response Drafted">Response Drafted</option>
+                            <option value="Sent">Sent</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Reopened">Reopened</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
+                `;
+                const origH3 = listCardHeader.querySelector('h3');
+                if (origH3) origH3.remove();
+                listCardHeader.insertBefore(headerFlex, document.querySelector('#tickets-list'));
+
+                document.getElementById('h-status-filter').addEventListener('change', (e) => {
+                    currentStatusFilter = e.target.value;
+                    renderHistory();
                 });
             }
 
@@ -206,14 +347,14 @@
 
             document.getElementById('export-btn').addEventListener('click', () => {
                 if (history.length === 0) { showToast('No data to export.', 'error'); return; }
-                let csv = 'Date,Category,Priority,Sentiment,Confidence,Time Saved (min),Customer,Order Number\n';
+                let csv = 'Date,Category,Priority,Sentiment,Confidence,Status,Time Saved (min),Customer,Order Number\n';
                 history.forEach(h => {
-                    csv += `"${h.date}","${h.category}","${h.priority}","${h.sentiment || ''}",${h.confidence},${h.timeSaved},"${h.customerName || ''}","${h.orderNumber || ''}"\n`;
+                    csv += `"${h.date}","${h.category}","${h.priority}","${h.sentiment || ''}",${h.confidence},"${h.status || ''}",${h.timeSaved},"${h.customerName || ''}","${h.orderNumber || ''}"\n`;
                 });
                 const blob = new Blob([csv], { type: 'text/csv' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url; a.download = 'supportgenie_export.csv';
+                a.href = url; a.download = '_export.csv';
                 a.click(); URL.revokeObjectURL(url);
                 showToast('CSV exported!');
             });
@@ -229,4 +370,5 @@
         })();
     </script>
 </body>
+
 </html>

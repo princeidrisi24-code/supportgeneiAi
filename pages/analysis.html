@@ -1,174 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Results | SupportGenie</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Analysis Results | </title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23753FC9'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>SG</text></svg>">
     <link rel="stylesheet" href="../css/styles.css">
     <script src="../js/theme.js"></script>
     <style>
-        .nav-link { text-decoration: none; color: var(--text-secondary); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-        .nav-link:hover { color: var(--text-primary); }
-        .nav-link.active { color: var(--text-primary); background: var(--btn-secondary-bg); }
-        .info-row { display: flex; padding: 14px 0; border-bottom: 1px solid var(--card-border); }
-        .info-label { width: 140px; color: var(--text-secondary); font-size: 0.9rem; flex-shrink: 0; }
-        .info-value { flex: 1; font-weight: 500; }
-        .confidence-bar { height: 8px; background: var(--track-bg); border-radius: 4px; overflow: hidden; }
-        .confidence-bar-fill { height: 100%; border-radius: 4px; transition: width 1.5s ease-out; }
-        .confidence-bar-fill.high { background: var(--success); }
-        .confidence-bar-fill.medium { background: var(--warning); }
-        .confidence-bar-fill.low { background: var(--error); }
+        .info-row {
+            display: flex;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .info-label {
+            width: 150px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            flex: 1;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background: var(--bg-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .confidence-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .confidence-bar-fill.high {
+            background: var(--success);
+        }
+
+        .confidence-bar-fill.medium {
+            background: var(--warning);
+        }
+
+        .confidence-bar-fill.low {
+            background: var(--error);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .alert-box {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            background: var(--warning-bg);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            font-size: 14px;
+        }
+
+        .alert-box.pii-alert {
+            background: var(--error-bg);
+            border-color: var(--error);
+            color: var(--error);
+        }
     </style>
 </head>
+
 <body>
-    <div id="toast-container" class="toast-container"></div>
-    
-    <!-- Navbar -->
-    <nav class="navbar glass-card">
-        <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
-            <a href="dashboard.html" class="logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
-                <span style="font-size:1.5rem;">🧞‍♂️</span>
-                <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">SupportGenie</span>
-            </a>
-            <div class="nav-links" style="display:flex;gap:8px;align-items:center;">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="new-ticket.html" class="nav-link active">New Ticket</a>
-                <a href="history.html" class="nav-link">History</a>
-                <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-left:8px;">☀️</button>
-                <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
-                    <div class="avatar" id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d2ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;"></div>
-                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <div class="page-wrapper">
+        <div id="toast-container" class="toast-container"></div>
 
-    <main class="main-content container">
-        <div class="animate-fade-in-up">
-            <!-- Back button -->
-            <div class="mb-3">
-                <a href="new-ticket.html" class="btn btn-ghost" style="padding-left:0;">← Analyze Another Ticket</a>
-            </div>
-
-            <!-- Alert Banner (shown conditionally) -->
-            <div id="review-alert" class="alert-banner alert-warning hidden mb-3">
-                ⚠️ <strong>Human Review Recommended:</strong> <span id="review-reason"></span>
-            </div>
-
-            <!-- Analysis Metrics Grid -->
-            <div class="grid-4 mb-4" id="analysis-metrics">
-                <div class="glass-card-sm" style="text-align:center;">
-                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Category</div>
-                    <div id="res-category" class="badge" style="font-size:1rem;padding:8px 16px;">—</div>
-                </div>
-                <div class="glass-card-sm" style="text-align:center;">
-                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Priority</div>
-                    <div id="res-priority" class="badge" style="font-size:1rem;padding:8px 16px;">—</div>
-                </div>
-                <div class="glass-card-sm" style="text-align:center;">
-                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Sentiment</div>
-                    <div id="res-sentiment" style="font-size:1.2rem;font-weight:600;">—</div>
-                </div>
-                <div class="glass-card-sm" style="text-align:center;">
-                    <div class="text-muted" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Confidence</div>
-                    <div style="position:relative;margin-top:4px;">
-                        <div class="confidence-bar"><div id="res-conf-bar" class="confidence-bar-fill"></div></div>
-                        <div id="res-conf-text" style="font-size:0.9rem;font-weight:700;margin-top:6px;">0%</div>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="container flex-between" style="height:64px; align-items:center;">
+                <a href="dashboard.html" class="logo">
+                    <svg class="logo-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                    <span class="brand-text" style="font-size:1.25rem;"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="dashboard.html" class="nav-item">Dashboard</a>
+                    <a href="new-ticket.html" class="nav-item active">New Ticket</a>
+                    <a href="history.html" class="nav-item">History</a>
+                    <button class="theme-toggle-btn" aria-label="Toggle Theme">Dark Theme</button>
+                    <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
                     </div>
                 </div>
             </div>
+        </nav>
 
-            <!-- Two Column: Extracted Info + Original Ticket -->
-            <div class="grid-2 mb-4">
-                <div class="glass-card">
-                    <h3 class="mb-3">🔍 Extracted Information</h3>
-                    <div class="info-row"><span class="info-label">Customer Name:</span><span id="res-name" class="info-value">—</span></div>
-                    <div class="info-row"><span class="info-label">Order Number:</span><span id="res-order" class="info-value">—</span></div>
-                    <div class="info-row"><span class="info-label">Product/Item:</span><span id="res-product" class="info-value">—</span></div>
-                    <div class="info-row" style="border-bottom:none;"><span class="info-label">Issue Summary:</span><span id="res-summary" class="info-value">—</span></div>
+        <main class="main-content container" style="margin-top: 2rem;">
+            <div class="animate-fade-in-up">
+                <div class="mb-3 flex-between">
+                    <a href="new-ticket.html" class="btn btn-ghost btn-sm" style="text-decoration: none;">&larr; Analyze
+                        Another Ticket</a>
+                    <div id="status-tag-container" style="display:flex; gap:8px; align-items:center;">
+                        <span id="time-saved-badge" class="badge badge-green">Est. 5 mins saved</span>
+                        <span id="review-status-badge" class="badge badge-purple">AI Ready</span>
+                    </div>
                 </div>
-                <div class="glass-card">
-                    <h3 class="mb-3">📧 Original Ticket</h3>
-                    <div id="original-ticket" style="font-size:0.9rem;line-height:1.6;color:rgba(255,255,255,0.7);white-space:pre-wrap;max-height:200px;overflow-y:auto;"></div>
+
+                <!-- Conditional Review Alert -->
+                <div id="review-alert" class="alert-box hidden mb-3">
+                    <strong>Human Review Required:</strong> <span id="review-reason"></span>
+                </div>
+
+                <!-- PII Alert -->
+                <div id="pii-alert" class="alert-box pii-alert hidden mb-3">
+                    <strong>Sensitive Customer Data (PII):</strong> <span id="pii-reason"></span>
+                </div>
+
+                <!-- Analysis Metrics Grid -->
+                <div class="grid-4 mb-4" id="analysis-metrics">
+                    <div class="card text-center" style="padding: 1.25rem;">
+                        <div class="text-secondary mb-1" style="font-size: 12px; text-transform: uppercase;">Category
+                        </div>
+                        <div id="res-category" class="badge badge-purple" style="font-size: 14px;">—</div>
+                        <div id="res-secondary-cat" class="text-secondary mt-1 hidden" style="font-size: 12px;"></div>
+                    </div>
+                    <div class="card text-center" style="padding: 1.25rem;">
+                        <div class="text-secondary mb-1" style="font-size: 12px; text-transform: uppercase;">Priority
+                        </div>
+                        <div id="res-priority" class="badge badge-orange" style="font-size: 14px;">—</div>
+                    </div>
+                    <div class="card text-center" style="padding: 1.25rem;">
+                        <div class="text-secondary mb-1" style="font-size: 12px; text-transform: uppercase;">Sentiment
+                        </div>
+                        <div id="res-sentiment" style="font-size: 16px; font-weight: 600;">—</div>
+                    </div>
+                    <div class="card text-center" style="padding: 1.25rem;">
+                        <div class="text-secondary mb-1" style="font-size: 12px; text-transform: uppercase;">Confidence
+                        </div>
+                        <div>
+                            <div class="confidence-bar">
+                                <div id="res-conf-bar" class="confidence-bar-fill"></div>
+                            </div>
+                            <div id="res-conf-text" style="font-size: 14px; font-weight: 700; margin-top: 4px;">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Reason Banner -->
+                <div class="card mb-4" style="padding: 1rem 1.5rem; background: var(--bg-color);">
+                    <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">
+                        Priority Context</div>
+                    <div id="res-priority-reason" class="text-secondary" style="font-size: 14px;">—</div>
+                </div>
+
+                <!-- Two Column: Extracted Info + Original Ticket -->
+                <div class="grid-2 mb-4">
+                    <div class="card" style="padding: 1.5rem;">
+                        <h3 class="mb-3">Extracted Information</h3>
+                        <div class="info-row"><span class="info-label">Customer Name:</span><span id="res-name"
+                                class="info-value">—</span></div>
+                        <div class="info-row"><span class="info-label">Order Number:</span><span id="res-order"
+                                class="info-value">—</span></div>
+                        <div class="info-row"><span class="info-label">Product / Item:</span><span id="res-product"
+                                class="info-value">—</span></div>
+                        <div class="info-row" style="border-bottom:none;"><span class="info-label">Issue
+                                Summary:</span><span id="res-summary" class="info-value">—</span></div>
+                    </div>
+                    <div class="card" style="padding: 1.5rem;">
+                        <h3 class="mb-3">Original Ticket</h3>
+                        <div id="original-ticket"
+                            style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); white-space: pre-wrap; max-height: 220px; overflow-y: auto;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="text-center">
+                    <a href="response.html" class="btn btn-primary btn-lg" style="text-decoration: none;">View Draft
+                        Response &rarr;</a>
                 </div>
             </div>
+        </main>
 
-            <!-- CTA -->
-            <div class="text-center">
-                <a href="response.html" class="btn btn-primary btn-lg">📝 View Draft Response →</a>
+        <footer
+            style="padding: 24px 0; border-top: 1px solid var(--card-border); margin-top: auto; background: var(--surface);">
+            <div class="container text-center">
+                <p class="text-muted" style="font-size:14px;"> — Customer Support Ticket System for E-Commerce Teams</p>
             </div>
-        </div>
-    </main>
-
-    <footer class="footer" style="padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:60px;">
-        <div class="container text-center">
-            <p class="text-muted" style="font-size:0.85rem;">SupportGenie — AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/ai-engine.js"></script>
     <script src="../js/db.js"></script>
     <script>
-        // Auth guard
         if (typeof Auth !== 'undefined' && !Auth.requireAuth()) {
             window.location.href = '../login.html';
         }
-        
-        // Set user avatar
+
         let user = { name: 'User', id: '1' };
         if (typeof Auth !== 'undefined') user = Auth.getCurrentUser() || user;
-        
-        if(user && user.name) {
+
+        if (user && user.name) {
             document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
         }
-        
-        // Logout
+
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await Auth.logout();
         });
-        
-        // Toast utility
+
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
+            toast.style.cssText = 'padding:12px 20px; background:var(--primary); color:#fff; border-radius:8px; margin-top:8px; font-size:14px;';
             toast.textContent = message;
             container.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('show'));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
     </script>
     <script>
         const analysis = JSON.parse(sessionStorage.getItem('sg_current_analysis'));
         if (!analysis) { window.location.href = 'new-ticket.html'; }
         else {
-            // Populate results
             const catEl = document.getElementById('res-category');
-            catEl.textContent = analysis.category;
-            const catClass = 'badge-' + analysis.category.toLowerCase().replace(/[\s\/]/g, '-').replace('return-refund','return');
-            catEl.className = 'badge ' + catClass;
+            catEl.textContent = analysis.category || 'Other / Unclassified';
+            catEl.className = 'badge badge-purple';
+
+            if (analysis.secondaryCategory) {
+                const secCatEl = document.getElementById('res-secondary-cat');
+                secCatEl.textContent = `Secondary Intent: ${analysis.secondaryCategory}`;
+                secCatEl.classList.remove('hidden');
+            }
 
             const priEl = document.getElementById('res-priority');
             priEl.textContent = analysis.priority;
-            priEl.className = 'badge badge-' + analysis.priority.toLowerCase();
+            priEl.className = 'badge badge-' + (analysis.priority === 'Critical' ? 'red' : analysis.priority === 'High' ? 'orange' : 'gray');
+
+            document.getElementById('res-priority-reason').textContent = analysis.priorityReason || 'Assigned based on ticket evaluation.';
 
             document.getElementById('res-sentiment').textContent = analysis.sentiment;
 
-            // Confidence bar
-            const confVal = analysis.confidence;
+            const confVal = analysis.confidence || 75;
             const confBar = document.getElementById('res-conf-bar');
             setTimeout(() => { confBar.style.width = confVal + '%'; }, 100);
-            confBar.className = 'confidence-bar-fill ' + (confVal > 80 ? 'high' : confVal > 60 ? 'medium' : 'low');
-            document.getElementById('res-conf-text').textContent = confVal + '%';
+            confBar.className = 'confidence-bar-fill ' + (confVal >= 85 ? 'high' : confVal >= 70 ? 'medium' : 'low');
+            document.getElementById('res-conf-text').textContent = confVal + '% (' + (confVal >= 90 ? 'High Confidence' : confVal >= 70 ? 'Agent Review Suggested' : 'Low Confidence') + ')';
 
-            // Extracted info
             const name = analysis.customerName || (analysis.extractedInfo && analysis.extractedInfo.customerName) || 'Not detected';
             const order = analysis.orderNum || analysis.orderNumber || (analysis.extractedInfo && analysis.extractedInfo.orderNumber) || 'Not detected';
             const product = analysis.product || analysis.productName || (analysis.extractedInfo && analysis.extractedInfo.productName) || 'Not detected';
@@ -179,18 +275,37 @@
             document.getElementById('res-product').textContent = product;
             document.getElementById('res-summary').textContent = summary;
 
-            // Original ticket
             document.getElementById('original-ticket').textContent = analysis.rawText || 'No text provided';
 
-            // Review alert
-            if (analysis.needsReview) {
+            // Calculate and display dynamic time saved
+            const aiEngine = (typeof AI !== 'undefined') ? new AI() : null;
+            const timeSaved = analysis.timeSaved || (aiEngine ? aiEngine.calculateTimeSaved(analysis) : 5);
+            analysis.timeSaved = timeSaved;
+            sessionStorage.setItem('sg_current_analysis', JSON.stringify(analysis));
+            document.getElementById('time-saved-badge').textContent = `Est. ${timeSaved} mins saved`;
+
+            // Human Review Status Badge & Alert
+            const statusBadge = document.getElementById('review-status-badge');
+            if (analysis.needsHumanReview) {
+                statusBadge.textContent = 'Human Review Required';
+                statusBadge.className = 'badge badge-red';
+
                 const alertEl = document.getElementById('review-alert');
                 alertEl.classList.remove('hidden');
-                document.getElementById('review-reason').textContent = analysis.confidence < 70 
-                    ? 'Low confidence score. Please review the classification carefully.'
-                    : 'High priority with angry sentiment detected. Consider escalating.';
+                document.getElementById('review-reason').textContent = analysis.reviewReason || 'Verification recommended before response dispatch.';
+            } else {
+                statusBadge.textContent = 'AI Ready';
+                statusBadge.className = 'badge badge-green';
+            }
+
+            // PII alert
+            if (analysis.pii && analysis.pii.hasPII) {
+                const piiAlert = document.getElementById('pii-alert');
+                piiAlert.classList.remove('hidden');
+                document.getElementById('pii-reason').textContent = `Ticket contains sensitive details (${analysis.pii.piiTypes.join(', ')}). Handle securely.`;
             }
         }
     </script>
 </body>
+
 </html>

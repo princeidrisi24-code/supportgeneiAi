@@ -1,96 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draft Response | SupportGenie</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Draft Response | </title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23753FC9'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>SG</text></svg>">
     <link rel="stylesheet" href="../css/styles.css">
     <script src="../js/theme.js"></script>
     <style>
-        .nav-link { text-decoration: none; color: var(--text-secondary); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-        .nav-link:hover { color: var(--text-primary); }
-        .nav-link.active { color: var(--text-primary); background: var(--btn-secondary-bg); }
-        .response-textarea { min-height: 320px; font-size: 1rem; line-height: 1.7; resize: vertical; }
+        .response-textarea {
+            min-height: 320px;
+            font-size: 1rem;
+            line-height: 1.7;
+            resize: vertical;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .warning-box {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            font-size: 14px;
+        }
     </style>
 </head>
+
 <body>
-    <div id="toast-container" class="toast-container"></div>
-    
-    <!-- Navbar -->
-    <nav class="navbar glass-card">
-        <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
-            <a href="dashboard.html" class="logo" style="text-decoration:none;display:flex;align-items:center;gap:10px;">
-                <span style="font-size:1.5rem;">🧞‍♂️</span>
-                <span class="gradient-text" style="font-size:1.3rem;font-weight:700;">SupportGenie</span>
-            </a>
-            <div class="nav-links" style="display:flex;gap:8px;align-items:center;">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="new-ticket.html" class="nav-link active">New Ticket</a>
-                <a href="history.html" class="nav-link">History</a>
-                <button class="theme-toggle-btn" aria-label="Toggle Theme" style="margin-left:8px;">☀️</button>
-                <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
-                    <div class="avatar" id="user-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d2ff,#7b2ff7);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;"></div>
-                    <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <div class="page-wrapper">
+        <div id="toast-container" class="toast-container"></div>
 
-    <main class="main-content container">
-        <div class="animate-fade-in-up">
-            <div class="mb-3 flex-between" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-                <a href="analysis.html" class="btn btn-ghost" style="padding-left:0;">← Back to Analysis</a>
-                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-                    <label for="change-tone-select" class="text-secondary" style="font-size:0.85rem;">Tone:</label>
-                    <select id="change-tone-select" class="form-input" style="padding:4px 10px;font-size:0.85rem;width:auto;">
-                        <option value="professional">🎩 Professional</option>
-                        <option value="friendly">🎭 Friendly</option>
-                        <option value="empathetic">💝 Empathetic</option>
-                    </select>
-                    <span class="badge" style="background:rgba(0,230,118,0.1);color:#00e676;border:1px solid rgba(0,230,118,0.2);" id="time-saved-badge">⏱️ Est. 8 mins saved</span>
-                </div>
-            </div>
-
-            <div class="glass-card mb-4">
-                <div class="flex-between mb-3" style="display:flex;justify-content:space-between;align-items:center;">
-                    <h3>✏️ AI-Generated Response</h3>
-                    <div class="quality-indicators" style="display:flex;gap:8px;">
-                        <span class="badge" style="background:rgba(0,230,118,0.1);color:#00e676;font-size:0.75rem;">✅ Tone Match</span>
-                        <span class="badge" style="background:rgba(0,230,118,0.1);color:#00e676;font-size:0.75rem;">✅ Complete</span>
-                        <span class="badge" style="background:rgba(0,230,118,0.1);color:#00e676;font-size:0.75rem;">✅ Empathetic</span>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="container flex-between" style="height:64px; align-items:center;">
+                <a href="dashboard.html" class="logo">
+                    <svg class="logo-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                    <span class="brand-text" style="font-size:1.25rem;"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="dashboard.html" class="nav-item">Dashboard</a>
+                    <a href="new-ticket.html" class="nav-item active">New Ticket</a>
+                    <a href="history.html" class="nav-item">History</a>
+                    <button class="theme-toggle-btn" aria-label="Toggle Theme">Dark Theme</button>
+                    <div class="user-menu" style="display:flex;align-items:center;gap:10px;margin-left:8px;">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
                     </div>
                 </div>
-                <textarea id="draft-output" class="form-input response-textarea"></textarea>
             </div>
+        </nav>
 
-            <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                <button id="copy-btn" class="btn btn-secondary" style="flex:1;min-width:140px;">📋 Copy to Clipboard</button>
-                <button id="regenerate-btn" class="btn btn-secondary" style="flex:1;min-width:140px;">🔄 Regenerate</button>
-                <button id="save-another-btn" class="btn btn-secondary" style="flex:1;min-width:170px;">✨ Save & New Ticket</button>
-                <button id="save-btn" class="btn btn-primary" style="flex:2;min-width:180px;">💾 Save & Complete</button>
+        <main class="main-content container" style="margin-top: 2rem;">
+            <div class="animate-fade-in-up">
+                <div class="mb-3 flex-between" style="flex-wrap:wrap; gap:12px;">
+                    <a href="analysis.html" class="btn btn-ghost btn-sm" style="text-decoration: none;">&larr; Back to
+                        Analysis</a>
+                    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                        <label for="change-tone-select" class="text-secondary"
+                            style="font-size: 14px; font-weight: 500;">Tone:</label>
+                        <select id="change-tone-select" class="form-input"
+                            style="padding:4px 10px; font-size:14px; width:auto; height: 36px;">
+                            <option value="professional">Professional</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="empathetic">Empathetic</option>
+                        </select>
+                        <span class="badge badge-green" id="time-saved-badge">Est. 8 mins saved</span>
+                    </div>
+                </div>
+
+                <!-- Verification Warning Banner -->
+                <div id="agent-warning-banner" class="warning-box hidden">
+                    <strong>Human Review Required:</strong> Please review and verify all details in the response before
+                    sending to the customer.
+                </div>
+
+                <div class="card mb-4" style="padding: 1.5rem;">
+                    <div class="flex-between mb-3" style="flex-wrap: wrap; gap: 8px;">
+                        <h3>AI-Generated Response</h3>
+                        <div class="quality-indicators" style="display:flex; gap:8px;">
+                            <span class="badge badge-green">Safe Draft</span>
+                            <span class="badge badge-purple" id="tone-badge">Friendly</span>
+                        </div>
+                    </div>
+                    <textarea id="draft-output" class="form-input response-textarea"></textarea>
+                </div>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <button id="copy-btn" class="btn btn-secondary" style="flex:1; min-width:140px;">Copy to
+                        Clipboard</button>
+                    <button id="regenerate-btn" class="btn btn-secondary"
+                        style="flex:1; min-width:140px;">Regenerate</button>
+                    <button id="save-another-btn" class="btn btn-secondary" style="flex:1; min-width:170px;">Save & New
+                        Ticket</button>
+                    <button id="save-btn" class="btn btn-primary" style="flex:2; min-width:180px;">Save &
+                        Complete</button>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <footer class="footer" style="padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);margin-top:60px;">
-        <div class="container text-center">
-            <p class="text-muted" style="font-size:0.85rem;">SupportGenie — AI-Powered Customer Support · Built for Small E-Commerce Teams</p>
-        </div>
-    </footer>
+        <footer
+            style="padding: 24px 0; border-top: 1px solid var(--card-border); margin-top: auto; background: var(--surface);">
+            <div class="container text-center">
+                <p class="text-muted" style="font-size:14px;"> — Customer Support Ticket System for E-Commerce Teams</p>
+            </div>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/ai-engine.js"></script>
     <script src="../js/db.js"></script>
     <script>
-        // Auth guard
         if (typeof Auth !== 'undefined' && !Auth.requireAuth()) {
             window.location.href = '../login.html';
         }
         
-        // Set user avatar
         let user = { name: 'User', id: '1' };
         if (typeof Auth !== 'undefined') user = Auth.getCurrentUser() || user;
         
@@ -98,23 +140,19 @@
             document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
         }
         
-        // Logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await Auth.logout();
         });
         
-        // Toast utility
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if(!container) return;
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
+            toast.style.cssText = 'padding:12px 20px; background:var(--primary); color:#fff; border-radius:8px; margin-top:8px; font-size:14px;';
             toast.textContent = message;
             container.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('show'));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
     </script>
     <script>
@@ -122,128 +160,131 @@
         const draft = sessionStorage.getItem('sg_current_draft');
         const tone = sessionStorage.getItem('sg_current_tone') || 'friendly';
 
-        if (!analysis || !draft) { 
-            window.location.href = 'new-ticket.html'; 
+        if (!analysis || !draft) {
+            window.location.href = 'new-ticket.html';
         } else {
-            // Set draft
             document.getElementById('draft-output').value = draft;
 
-            // Set tone selector value
             const toneSelect = document.getElementById('change-tone-select');
+            const toneBadge = document.getElementById('tone-badge');
             if (toneSelect) toneSelect.value = tone;
+            if (toneBadge) toneBadge.textContent = tone.charAt(0).toUpperCase() + tone.slice(1);
 
-            // Tone change event
+            if (analysis.needsHumanReview) {
+                document.getElementById('agent-warning-banner').classList.remove('hidden');
+            }
+
             if (toneSelect) {
                 toneSelect.addEventListener('change', () => {
                     const newTone = toneSelect.value;
-                    if (typeof SupportGenieAI !== 'undefined') {
-                        const ai = new SupportGenieAI();
+                    if (typeof AI !== 'undefined') {
+                        const ai = new AI();
                         const newDraft = ai.generateDraft(analysis, user.storeName || 'Our Store', newTone);
                         document.getElementById('draft-output').value = newDraft;
                         sessionStorage.setItem('sg_current_tone', newTone);
                         sessionStorage.setItem('sg_current_draft', newDraft);
+                        if (toneBadge) toneBadge.textContent = newTone.charAt(0).toUpperCase() + newTone.slice(1);
                         showToast(`Tone updated to ${newTone.charAt(0).toUpperCase() + newTone.slice(1)}`);
                     }
                 });
             }
 
-            // Time saved estimate
-            const timeSaved = Math.max(3, Math.floor(analysis.rawText.length / 50));
-            document.getElementById('time-saved-badge').textContent = `⏱️ Est. ${timeSaved} mins saved`;
+            const aiEngine = (typeof AI !== 'undefined') ? new AI() : null;
+            const timeSaved = analysis.timeSaved || (aiEngine ? aiEngine.calculateTimeSaved(analysis) : Math.max(3, Math.floor((analysis.rawText || '').length / 50)));
+            document.getElementById('time-saved-badge').textContent = `Est. ${timeSaved} mins saved`;
 
-            // Copy with visual button state update
             const copyBtn = document.getElementById('copy-btn');
             copyBtn.addEventListener('click', () => {
                 const textToCopy = document.getElementById('draft-output').value;
                 navigator.clipboard.writeText(textToCopy)
                     .then(() => {
-                        copyBtn.textContent = '✅ Copied!';
+                        copyBtn.textContent = 'Copied!';
                         showToast('Copied to clipboard!');
-                        setTimeout(() => { copyBtn.textContent = '📋 Copy to Clipboard'; }, 2000);
+                        setTimeout(() => { copyBtn.textContent = 'Copy to Clipboard'; }, 2000);
                     })
                     .catch(() => {
                         const ta = document.getElementById('draft-output');
                         ta.select();
                         document.execCommand('copy');
-                        copyBtn.textContent = '✅ Copied!';
+                        copyBtn.textContent = 'Copied!';
                         showToast('Copied to clipboard!');
-                        setTimeout(() => { copyBtn.textContent = '📋 Copy to Clipboard'; }, 2000);
+                        setTimeout(() => { copyBtn.textContent = 'Copy to Clipboard'; }, 2000);
                     });
             });
 
-            // Regenerate
             document.getElementById('regenerate-btn').addEventListener('click', () => {
                 const currentSelectedTone = toneSelect ? toneSelect.value : tone;
-                if (typeof SupportGenieAI !== 'undefined') {
-                    const ai = new SupportGenieAI();
+                if (typeof AI !== 'undefined') {
+                    const ai = new AI();
                     const newDraft = ai.generateDraft(analysis, user.storeName || 'Our Store', currentSelectedTone);
                     document.getElementById('draft-output').value = newDraft;
                     sessionStorage.setItem('sg_current_draft', newDraft);
-                    showToast('Response regenerated with alternative template');
+                    showToast('Response regenerated with safe template');
                 }
             });
 
-            // Common Save function
-            async function performSave(redirectTo = 'dashboard.html') {
+            async function performSave(redirectTo = 'dashboard.html', targetStatus = 'Resolved') {
                 const currentDraftText = document.getElementById('draft-output').value;
                 const selectedTone = toneSelect ? toneSelect.value : tone;
 
                 const ticketPayload = {
-                    category:      analysis.category,
-                    priority:      analysis.priority,
-                    sentiment:     analysis.sentiment,
-                    confidence:    analysis.confidence,
-                    ticketText:    analysis.rawText || '',
+                    id: analysis.id || undefined,
+                    category: analysis.category,
+                    secondaryCategory: analysis.secondaryCategory || null,
+                    priority: analysis.priority,
+                    priorityReason: analysis.priorityReason || '',
+                    sentiment: analysis.sentiment,
+                    confidence: analysis.confidence,
+                    status: targetStatus,
+                    ticketText: analysis.rawText || '',
                     draftResponse: currentDraftText,
-                    timeSaved:     timeSaved,
-                    tone:          selectedTone,
-                    snippet:       (analysis.rawText || '').substring(0, 80) + '...',
-                    customerName:  analysis.customerName || (analysis.extractedInfo && analysis.extractedInfo.customerName) || '',
-                    orderNumber:   analysis.orderNum || analysis.orderNumber || (analysis.extractedInfo && analysis.extractedInfo.orderNumber) || '',
-                    date:          new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    timeSaved: timeSaved,
+                    tone: selectedTone,
+                    snippet: (analysis.rawText || '').substring(0, 80) + '...',
+                    customerName: analysis.customerName || (analysis.extractedInfo && analysis.extractedInfo.customerName) || '',
+                    orderNumber: analysis.orderNum || analysis.orderNumber || (analysis.extractedInfo && analysis.extractedInfo.orderNumber) || '',
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                 };
 
                 await TicketDB.save(ticketPayload);
 
-                // Clear session storage
                 sessionStorage.removeItem('sg_current_analysis');
                 sessionStorage.removeItem('sg_current_draft');
                 sessionStorage.removeItem('sg_current_tone');
 
-                showToast('Ticket saved to database! ✅');
-                setTimeout(() => { window.location.href = redirectTo; }, 800);
+                showToast('Ticket completed & saved to database!');
+                setTimeout(() => { window.location.href = redirectTo; }, 600);
             }
 
-            // Save & Complete
             const saveBtn = document.getElementById('save-btn');
             saveBtn.addEventListener('click', async () => {
                 saveBtn.disabled = true;
-                saveBtn.textContent = '⏳ Saving...';
+                saveBtn.textContent = 'Saving...';
                 try {
-                    await performSave('dashboard.html');
+                    await performSave('dashboard.html', 'Resolved');
                 } catch (err) {
                     showToast('Error saving ticket: ' + err.message, 'error');
                     saveBtn.disabled = false;
-                    saveBtn.textContent = '💾 Save & Complete';
+                    saveBtn.textContent = 'Save & Complete';
                 }
             });
 
-            // Save & New Ticket
             const saveAnotherBtn = document.getElementById('save-another-btn');
             if (saveAnotherBtn) {
                 saveAnotherBtn.addEventListener('click', async () => {
                     saveAnotherBtn.disabled = true;
-                    saveAnotherBtn.textContent = '⏳ Saving...';
+                    saveAnotherBtn.textContent = 'Saving...';
                     try {
-                        await performSave('new-ticket.html');
+                        await performSave('new-ticket.html', 'Resolved');
                     } catch (err) {
                         showToast('Error saving ticket: ' + err.message, 'error');
                         saveAnotherBtn.disabled = false;
-                        saveAnotherBtn.textContent = '✨ Save & New Ticket';
+                        saveAnotherBtn.textContent = 'Save & New Ticket';
                     }
                 });
             }
         }
     </script>
 </body>
+
 </html>

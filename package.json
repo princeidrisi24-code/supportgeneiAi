@@ -1,19 +1,19 @@
 {
-  "name": "SupportGenieAi",
+  "name": "Ai",
   "version": "1.0.0",
-  "description": "SupportGenie AI - Customer Support Ticket Responder for Small E-Commerce Teams",
+  "description": " AI - Customer Support Ticket Responder for Small E-Commerce Teams",
   "main": "index.html",
   "scripts": {
     "start": "npx serve .",
     "dev": "npx serve ."
   },
   "keywords": [
-    "supportgenie",
+    "",
     "customer-support",
     "ai",
     "ecommerce"
   ],
-  "author": "SupportGenie Developer",
+  "author": " Developer",
   "license": "MIT",
   "devDependencies": {
     "serve": "^14.2.4"

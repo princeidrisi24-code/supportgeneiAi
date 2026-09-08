@@ -1,7 +1,7 @@
-# SupportGenie AI — Evaluation & Test Results Matrix
+#  AI — Evaluation & Test Results Matrix
 
 ## Overview
-This document evaluates the accuracy, robustness, edge case handling, and failure modes of the SupportGenie AI Classification & Draft Generation Engine. Testing was conducted across **15 standardized test cases** representing real-world e-commerce customer support scenarios.
+This document evaluates the accuracy, robustness, edge case handling, and failure modes of the  AI Classification & Draft Generation Engine. Testing was conducted across **15 standardized test cases** representing real-world e-commerce customer support scenarios.
 
 ---
 
@@ -74,7 +74,7 @@ This document evaluates the accuracy, robustness, edge case handling, and failur
 
 ```
 +-----------------------------------------------------------------------+
-| Metric                       | Manual Workflow | SupportGenie AI      |
+| Metric                       | Manual Workflow |  AI      |
 +------------------------------+-----------------+----------------------+
 | Avg. Time Per Ticket         | 12-15 minutes   | 1.5 - 2 minutes      |
 | First-Response Resolution %  | 60%             | 85%                  |

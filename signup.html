@@ -1,27 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account - SupportGenie</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Create Account - </title>
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23753FC9'/><text x='50%' y='65%' font-size='50' font-weight='bold' text-anchor='middle' fill='white'>SG</text></svg>">
   <script src="js/theme.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/auth.js"></script>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
     .auth-page {
       display: flex;
       justify-content: center;
@@ -29,170 +19,141 @@
       min-height: calc(100vh - 64px);
       padding: 2rem;
     }
+
     .auth-card {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       padding: 2.5rem;
-      border-radius: 16px;
-      box-sizing: border-box;
     }
-    .auth-card h2 {
-      padding-top: 0;
-      margin-bottom: 0.5rem;
-    }
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-    .form-input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.2);
-      color: inherit;
-      font-family: inherit;
-      box-sizing: border-box;
-    }
-    .form-error {
-      color: var(--error, #ff1744);
-      font-size: 0.85rem;
-      margin-top: 8px;
-      padding: 8px 12px;
-      background: rgba(255, 23, 68, 0.1);
-      border-radius: 6px;
-    }
-    .hidden {
-      display: none !important;
-    }
-    .btn-block {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-    .text-center { text-align: center; }
-    .mb-4 { margin-bottom: 1.5rem; }
-    .mt-2 { margin-top: 0.5rem; }
-    .mt-4 { margin-top: 1.5rem; }
-    .text-secondary { color: #888; }
-    .text-muted { color: #888; font-weight: normal; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-    .flex-between { display: flex; justify-content: space-between; align-items: center; }
   </style>
 </head>
+
 <body>
-<div class="page-wrapper">
-  <nav class="navbar glass-card">
-    <div class="container flex-between" style="padding-top:0;padding-bottom:0;height:64px;align-items:center;">
-      <a href="index.html" class="logo" style="text-decoration:none;">
-        <span class="genie-icon">🧞‍♂️</span>
-        <h1 style="font-size:1.3rem; margin:0;" class="gradient-text">SupportGenie</h1>
-      </a>
-      <div style="display:flex;align-items:center;gap:12px;">
-        <button class="theme-toggle-btn" aria-label="Toggle Theme">☀️</button>
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <div class="container flex-between" style="height:64px; align-items:center;">
+        <a href="index.html" class="logo">
+          <svg class="logo-icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          <span class="brand-text" style="font-size:1.25rem;"></span>
+        </a>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="theme-toggle-btn" aria-label="Toggle Theme">Dark Theme</button>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <main class="auth-page main-content">
-    <div class="auth-card glass-card animate-fade-in-up">
-      <div class="logo-section text-center mb-4">
-        <div style="font-size: 3rem; margin-bottom: 8px;">🧞‍♂️</div>
-        <h2>Create Your Account</h2>
-        <p class="subtitle text-secondary">Start handling tickets 10x faster</p>
+    <main class="auth-page main-content">
+      <div class="auth-card animate-fade-in-up">
+        <div class="logo-section text-center mb-4">
+          <div style="margin-bottom: 12px; display: flex; justify-content: center;">
+            <svg class="logo-icon-svg" style="width: 48px; height: 48px;" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <h2>Create Your Account</h2>
+          <p class="text-secondary mb-2">Start handling support tickets faster</p>
+        </div>
+
+        <form id="signup-form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" class="form-input" placeholder="John Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="store-name">Store Name <span class="text-muted">(Optional)</span></label>
+            <input type="text" id="store-name" class="form-input" placeholder="e.g. Acme Fashion">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Min. 6 characters" required
+              minlength="6">
+          </div>
+          <div class="form-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" class="form-input" placeholder="Re-enter password" required>
+          </div>
+          <div id="signup-error" class="form-error hidden"></div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">
+            <span class="btn-text">Create Account</span>
+            <span class="spinner hidden">Loading...</span>
+          </button>
+
+          <div style="margin-top: 16px; text-align: center;">
+            <button type="button" id="demo-signup-btn" class="btn btn-secondary btn-block">Instant Demo Login</button>
+          </div>
+        </form>
+
+        <div class="auth-footer text-center mt-4">
+          <p class="text-secondary">Already have an account? <a href="login.html"
+              style="color: var(--primary); text-decoration:none; font-weight:600;">Sign In</a></p>
+        </div>
       </div>
+    </main>
 
-      <form id="signup-form">
-        <div class="form-group">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" class="form-input" placeholder="John Smith" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
-        </div>
-        <div class="form-group">
-          <label for="store-name">Store Name <span class="text-muted">(Optional)</span></label>
-          <input type="text" id="store-name" class="form-input" placeholder="e.g. Acme Fashion">
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" class="form-input" placeholder="Min. 6 characters" required minlength="6">
-        </div>
-        <div class="form-group">
-          <label for="confirm-password">Confirm Password</label>
-          <input type="password" id="confirm-password" class="form-input" placeholder="Re-enter password" required>
-        </div>
-        <div id="signup-error" class="form-error hidden"></div>
-        <button type="submit" class="btn btn-primary btn-block btn-lg mt-2">
-          <span class="btn-text">Create Account</span>
-          <span class="spinner hidden"></span>
-        </button>
-
-        <div style="margin-top: 16px; text-align: center;">
-          <button type="button" id="demo-signup-btn" class="btn btn-secondary btn-block">⚡ Instant Demo Login</button>
-        </div>
-      </form>
-
-      <div class="auth-footer text-center mt-4">
-        <p class="text-secondary">Already have an account? <a href="login.html" class="gradient-text" style="text-decoration:none; font-weight:600;">Sign In</a></p>
+    <footer
+      style="padding: 24px 0; border-top: 1px solid var(--card-border); margin-top: auto; background: var(--surface);">
+      <div class="container text-center">
+        <p class="text-muted" style="font-size:14px;"> — Customer Support Ticket System for E-Commerce Teams</p>
       </div>
-    </div>
-  </main>
-</div>
+    </footer>
+  </div>
 
-<script>
-  Auth.redirectIfLoggedIn();
-  
-  document.getElementById('signup-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const storeName = document.getElementById('store-name').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
-    const errorEl = document.getElementById('signup-error');
-    const btn = e.target.querySelector('button[type="submit"]');
-    const btnText = btn.querySelector('.btn-text');
-    const spinner = btn.querySelector('.spinner');
-    
-    if (password !== confirmPassword) {
-      errorEl.textContent = 'Passwords do not match.';
-      errorEl.classList.remove('hidden');
-      return;
-    }
-    
-    btnText.classList.add('hidden');
-    spinner.classList.remove('hidden');
-    btn.disabled = true;
-    errorEl.classList.add('hidden');
-    
-    try {
-      const result = await Auth.signup(name, email, password, storeName);
-      if (result.success) {
-        window.location.href = 'pages/dashboard.html';
-      } else {
-        errorEl.textContent = result.error;
+  <script>
+    Auth.redirectIfLoggedIn();
+
+    document.getElementById('signup-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const storeName = document.getElementById('store-name').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const errorEl = document.getElementById('signup-error');
+      const btn = e.target.querySelector('button[type="submit"]');
+      const btnText = btn.querySelector('.btn-text');
+      const spinner = btn.querySelector('.spinner');
+
+      if (password !== confirmPassword) {
+        errorEl.textContent = 'Passwords do not match.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      btnText.classList.add('hidden');
+      spinner.classList.remove('hidden');
+      btn.disabled = true;
+      errorEl.classList.add('hidden');
+
+      try {
+        const result = await Auth.signup(name, email, password, storeName);
+        if (result.success) {
+          window.location.href = 'pages/dashboard.html';
+        } else {
+          errorEl.textContent = result.error;
+          errorEl.classList.remove('hidden');
+          btnText.classList.remove('hidden');
+          spinner.classList.add('hidden');
+          btn.disabled = false;
+        }
+      } catch (err) {
+        errorEl.textContent = 'Something went wrong. Please try again.';
         errorEl.classList.remove('hidden');
         btnText.classList.remove('hidden');
         spinner.classList.add('hidden');
         btn.disabled = false;
       }
-    } catch (err) {
-      errorEl.textContent = 'Something went wrong. Please try again.';
-      errorEl.classList.remove('hidden');
-      btnText.classList.remove('hidden');
-      spinner.classList.add('hidden');
-      btn.disabled = false;
-    }
-  });
-  document.getElementById('demo-signup-btn').addEventListener('click', function() {
-    Auth.demoLogin();
-  });
-</script>
+    });
+    document.getElementById('demo-signup-btn').addEventListener('click', function () {
+      Auth.demoLogin();
+    });
+  </script>
 </body>
+
 </html>
