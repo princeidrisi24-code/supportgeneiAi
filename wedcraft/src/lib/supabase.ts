@@ -162,14 +162,9 @@ function createSmartQueryBuilder(table: string) {
     },
     then(onFulfilled?: any, onRejected?: any) {
       return (async () => {
-        const credentials = getSupabaseCredentials();
-        const isOffline =
-          !credentials.isCustom &&
-          (!credentials.url ||
-            credentials.url.includes('placeholder') ||
-            credentials.url.includes('tyzzgdrwotbexpnxknhm'));
+        const isOffline = !isLiveSupabaseConfigured();
 
-        // Attempt real Supabase query first if not a known offline placeholder
+        // Attempt real Supabase query first if live Supabase is configured
         if (!isOffline) {
           try {
             const res = await Promise.race([
@@ -177,10 +172,14 @@ function createSmartQueryBuilder(table: string) {
               new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000)),
             ]);
 
+            const errStr = (res?.error?.message || '').toLowerCase();
             const isNetworkError =
-              res?.error?.message?.toLowerCase().includes('fetch') ||
-              res?.error?.message?.toLowerCase().includes('network') ||
-              res?.error?.message?.toLowerCase().includes('failed to fetch');
+              errStr.includes('fetch') ||
+              errStr.includes('network') ||
+              errStr.includes('load failed') ||
+              errStr.includes('failed to load') ||
+              errStr.includes('failed to fetch') ||
+              res?.error?.status === 0;
 
             if (!isNetworkError && res && (res.data !== null || !res.error)) {
               return res;

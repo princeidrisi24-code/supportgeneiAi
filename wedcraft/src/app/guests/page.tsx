@@ -30,6 +30,25 @@ function GuestModal({ onClose, onSave, guest, saving }: {
     table_number: guest?.table_number || '',
   });
   const [error, setError] = useState('');
+  const [existingTables, setExistingTables] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith('wedcraft_seating_tables_'));
+      const found: string[] = [];
+      for (const k of keys) {
+        const val = JSON.parse(localStorage.getItem(k) || '[]');
+        if (Array.isArray(val)) {
+          val.forEach((t: any) => {
+            if (t?.name && !found.includes(t.name)) found.push(t.name);
+          });
+        }
+      }
+      setExistingTables(found);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const update = (field: string, value: string) => { setForm(prev => ({ ...prev, [field]: value })); setError(''); };
 
@@ -115,9 +134,31 @@ function GuestModal({ onClose, onSave, guest, saving }: {
               value={form.guest_group} onChange={e => update('guest_group', e.target.value)} disabled={saving} />
           </div>
           <div className="form-group">
-            <label className="form-label">Table Number</label>
-            <input className="form-input" placeholder="e.g., T1, VIP" value={form.table_number}
-              onChange={e => update('table_number', e.target.value)} disabled={saving} />
+            <label className="form-label">Table Assignment</label>
+            {existingTables.length > 0 ? (
+              <select
+                className="form-input form-select"
+                value={form.table_number}
+                onChange={e => update('table_number', e.target.value)}
+                disabled={saving}
+              >
+                <option value="">Unassigned</option>
+                {existingTables.map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+                {form.table_number && !existingTables.includes(form.table_number) && (
+                  <option value={form.table_number}>{form.table_number} (Custom)</option>
+                )}
+              </select>
+            ) : (
+              <input
+                className="form-input"
+                placeholder="e.g., Table 1, VIP"
+                value={form.table_number}
+                onChange={e => update('table_number', e.target.value)}
+                disabled={saving}
+              />
+            )}
           </div>
         </div>
 
