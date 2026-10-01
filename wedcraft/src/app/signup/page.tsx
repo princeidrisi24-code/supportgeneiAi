@@ -4,10 +4,9 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import ConnectionModal from '@/app/components/ConnectionModal';
 
 export default function SignupPage() {
-  const { signUp, user, loading: authLoading, isLocalMode } = useAuth();
+  const { signUp, user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -23,7 +22,6 @@ export default function SignupPage() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConnectionModal, setShowConnectionModal] = useState(false);
 
   if (!authLoading && user) {
     router.replace('/');
@@ -111,29 +109,6 @@ export default function SignupPage() {
   return (
     <div className="auth-page">
       <div className="auth-card" style={{ maxWidth: '520px' }}>
-        {/* Top Connection Badge */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <button
-            type="button"
-            className="btn btn-ghost btn-sm"
-            onClick={() => setShowConnectionModal(true)}
-            style={{ fontSize: '12px', padding: '4px 8px', color: 'var(--color-primary)' }}
-            title="Configure Supabase & GitHub credentials"
-          >
-            ⚙️ Connect Supabase &amp; GitHub
-          </button>
-          <span
-            className="badge"
-            style={{
-              fontSize: '11px',
-              background: isLocalMode ? 'var(--color-warning-bg)' : 'var(--color-primary-subtle)',
-              color: isLocalMode ? 'var(--color-warning)' : 'var(--color-primary)',
-            }}
-          >
-            {isLocalMode ? '🟡 Local Storage' : '☁️ Cloud Ready'}
-          </span>
-        </div>
-
         <div className="auth-logo">
           <div className="auth-logo-icon">💍</div>
           <span className="auth-logo-text">WedCraft</span>
@@ -287,10 +262,6 @@ export default function SignupPage() {
           <Link href="/login" style={{ fontWeight: 600 }}>Sign in</Link>
         </div>
       </div>
-
-      {showConnectionModal && (
-        <ConnectionModal onClose={() => setShowConnectionModal(false)} />
-      )}
     </div>
   );
 }

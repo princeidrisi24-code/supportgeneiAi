@@ -682,48 +682,65 @@ input, select, textarea {
   font-size: var(--text-btn-lg);
 }
 
-/* Primary Button */
+/* Primary Button — Luxury Radiant Royal CTA */
 .btn-primary {
-  background: var(--color-primary);
-  color: #F9FAFB;
-  border: 1px solid transparent;
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 50%, #581C87 100%);
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px -2px rgba(109, 40, 217, 0.45), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-primary:hover {
-  background: var(--color-primary-hover);
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6D28D9 100%);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 24px -2px rgba(109, 40, 217, 0.55), 0 4px 8px -2px rgba(0, 0, 0, 0.08);
 }
 
 .btn-primary:active,
 .btn-primary:focus-visible {
-  background: var(--color-primary);
-  box-shadow: 0 0 0 4px var(--color-primary-light);
+  background: linear-gradient(135deg, #6D28D9 0%, #581C87 100%);
+  transform: translateY(0.5px);
+  box-shadow: 0 2px 8px -1px rgba(109, 40, 217, 0.35);
 }
 
 .btn-primary:disabled {
-  background: var(--color-primary-light);
-  color: #F9FAFB;
+  background: #C4B5FD;
+  color: #F5F3FF !important;
+  box-shadow: none;
+  transform: none;
   cursor: not-allowed;
 }
 
-/* Secondary Button */
+/* Secondary Button — Elegant Lavender Glass Outline */
 .btn-secondary {
-  background: var(--color-primary-subtle);
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
+  background: #FFFFFF;
+  color: #6D28D9;
+  border: 1.5px solid #DDD6FE;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-secondary:hover {
-  background: var(--color-primary-light);
+  background: #FAF5FF;
+  border-color: #A78BFA;
+  color: #5B21B6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.15);
 }
 
 .btn-secondary:active,
 .btn-secondary:focus-visible {
-  box-shadow: 0 0 0 4px rgba(244, 238, 253, 0.50);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
 .btn-secondary:disabled {
-  background: #FFFFFF;
-  color: var(--color-primary-disabled);
+  background: #F9FAFB;
+  color: #9CA3AF;
+  border-color: #E5E7EB;
   cursor: not-allowed;
 }
 
@@ -732,10 +749,13 @@ input, select, textarea {
   background: #FFFFFF;
   color: #4B5563;
   border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
 }
 
 .btn-tertiary:hover {
   background: #F3F4F6;
+  color: #111827;
+  transform: translateY(-0.5px);
 }
 
 .btn-tertiary:active,
@@ -754,6 +774,7 @@ input, select, textarea {
   background: transparent;
   color: var(--color-text-secondary);
   border: none;
+  transition: all 0.2s ease;
 }
 
 .btn-ghost:hover {
@@ -761,16 +782,22 @@ input, select, textarea {
   color: var(--color-primary);
 }
 
-/* Accent / Danger Button */
+/* Accent Button — Soft Frosted Glow & Tactile Hover */
 .btn-accent {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #9B6FE0 100%);
-  color: #FFFFFF;
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 50%, #EDE9FE 100%);
+  color: #6D28D9 !important;
+  border: 1.5px solid #DDD6FE;
+  box-shadow: 0 2px 8px -2px rgba(124, 58, 237, 0.15);
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-accent:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%);
+  border-color: #C4B5FD;
+  color: #5B21B6 !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px -2px rgba(124, 58, 237, 0.25);
 }
 
 .btn-icon {
@@ -1798,18 +1825,20 @@ input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-background);
+  background: radial-gradient(ellipse at 50% 12%, #EDE9FE 0%, #F5F3FF 28%, #F8FAFC 65%, #F1F5F9 100%);
   padding: var(--space-md);
+  position: relative;
 }
 
 .auth-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--space-xl);
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 36px 32px;
   width: 100%;
   max-width: 440px;
-  box-shadow: var(--shadow-lg);
-  animation: scaleIn 0.4s ease-out;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 20px 45px -10px rgba(109, 40, 217, 0.12), 0 1px 3px rgba(0, 0, 0, 0.04);
+  animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .auth-logo {

@@ -4,13 +4,12 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import ConnectionModal from '@/app/components/ConnectionModal';
 
 const DEMO_EMAIL = 'guest@wedcraft.demo';
 const DEMO_PASSWORD = 'demo123456';
 
 export default function LoginPage() {
-  const { signIn, user, loading: authLoading, isLocalMode } = useAuth();
+  const { signIn, user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [email, setEmail] = useState('');
@@ -19,7 +18,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConnectionModal, setShowConnectionModal] = useState(false);
 
   // Redirect if already logged in
   if (!authLoading && user) {
@@ -99,29 +97,6 @@ export default function LoginPage() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        {/* Top Connection Badge */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <button
-            type="button"
-            className="btn btn-ghost btn-sm"
-            onClick={() => setShowConnectionModal(true)}
-            style={{ fontSize: '12px', padding: '4px 8px', color: 'var(--color-primary)' }}
-            title="Configure Supabase & GitHub credentials"
-          >
-            ⚙️ Connect Supabase &amp; GitHub
-          </button>
-          <span
-            className="badge"
-            style={{
-              fontSize: '11px',
-              background: isLocalMode ? 'var(--color-warning-bg)' : 'var(--color-primary-subtle)',
-              color: isLocalMode ? 'var(--color-warning)' : 'var(--color-primary)',
-            }}
-          >
-            {isLocalMode ? '🟡 Local Storage' : '☁️ Cloud Ready'}
-          </span>
-        </div>
-
         <div className="auth-logo">
           <div className="auth-logo-icon">💍</div>
           <span className="auth-logo-text">WedCraft</span>
@@ -236,10 +211,6 @@ export default function LoginPage() {
           <Link href="/signup" style={{ fontWeight: 600 }}>Create one</Link>
         </div>
       </div>
-
-      {showConnectionModal && (
-        <ConnectionModal onClose={() => setShowConnectionModal(false)} />
-      )}
     </div>
   );
 }

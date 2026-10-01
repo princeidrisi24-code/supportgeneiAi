@@ -6,7 +6,6 @@ import { supabase } from "@/lib/supabase";
 import { showToast } from "@/app/components/Toast";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
-import ConnectionModal from "@/app/components/ConnectionModal";
 
 export default function SettingsPage() {
   const { user, profile, wedding, loading: authLoading, refreshWedding, resetToFresh } = useAuth();
@@ -29,7 +28,6 @@ export default function SettingsPage() {
   const [savingWedding, setSavingWedding] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [showConnectionModal, setShowConnectionModal] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -334,44 +332,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Supabase & GitHub Integration Card */}
-      <div className="card animate-fade-in-up" style={{ marginTop: "24px" }}>
-        <div className="card-header">
-          <div>
-            <div className="card-title">🔗 Database &amp; Developer Integrations</div>
-            <div className="card-subtitle">Connect your Supabase PostgreSQL cloud database and GitHub repository</div>
-          </div>
-          <button
-            className="btn btn-primary btn-sm"
-            onClick={() => setShowConnectionModal(true)}
-          >
-            ⚙️ Configure Connections
-          </button>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-          <div style={{ padding: "16px", borderRadius: "10px", background: "var(--color-background)", border: "1px solid var(--color-border-light)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-              <span style={{ fontSize: "18px" }}>⚡</span>
-              <strong style={{ fontSize: "14px" }}>Supabase Database</strong>
-            </div>
-            <p className="text-xs text-muted" style={{ margin: 0 }}>
-              Supports real-time cloud sync with PostgreSQL and transparent local storage offline fallback.
-            </p>
-          </div>
-
-          <div style={{ padding: "16px", borderRadius: "10px", background: "var(--color-background)", border: "1px solid var(--color-border-light)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-              <span style={{ fontSize: "18px" }}>🐙</span>
-              <strong style={{ fontSize: "14px" }}>GitHub Task Sync</strong>
-            </div>
-            <p className="text-xs text-muted" style={{ margin: 0 }}>
-              Sync checklist milestones directly to GitHub Issues in <code>princeidrisi24-code/supportgeneiAi</code>.
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Danger Zone */}
       <div
         className="card animate-fade-in-up stagger-3"
@@ -470,10 +430,6 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
-
-      {showConnectionModal && (
-        <ConnectionModal onClose={() => setShowConnectionModal(false)} />
-      )}
     </div>
   );
 }

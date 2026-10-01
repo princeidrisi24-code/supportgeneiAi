@@ -310,8 +310,6 @@ export default function ChecklistPage() {
     );
   }
 
-  const ghConfigured = isGitHubConfigured();
-
   return (
     <div>
       <div className="page-header">
@@ -541,22 +539,10 @@ export default function ChecklistPage() {
                                     {countdownText && ` (${countdownText})`}
                                   </span>
                                 )}
-                                {task.github_issue_number && (
-                                  <span className="github-badge" title={`GitHub Issue #${task.github_issue_number}`}>
-                                    🐙 #{task.github_issue_number}
-                                  </span>
-                                )}
-                              </div>
+                                </div>
                             </div>
                             {task.assignee && <div className="task-assignee">{task.assignee.charAt(0)}</div>}
                             <div className="task-actions">
-                              {ghConfigured && !task.github_issue_number && (
-                                <button className="btn btn-icon btn-ghost" title="Sync to GitHub"
-                                  onClick={() => syncToGitHub(task.id)} disabled={syncingId === task.id}
-                                  style={{ fontSize: "14px" }}>
-                                  {syncingId === task.id ? '⏳' : '🐙'}
-                                </button>
-                              )}
                               <button className="btn btn-icon btn-ghost" title="Edit task"
                                 onClick={() => { setEditingTask(task); setShowModal(true); }}
                                 style={{ fontSize: "14px" }}>
@@ -616,22 +602,10 @@ export default function ChecklistPage() {
                             📅 {new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </span>
                         )}
-                        {task.github_issue_number && (
-                          <span className="github-badge" title={`GitHub Issue #${task.github_issue_number}`}>
-                            🐙 #{task.github_issue_number}
-                          </span>
-                        )}
                       </div>
                     </div>
                     {task.assignee && <div className="task-assignee">{task.assignee.charAt(0)}</div>}
                     <div className="task-actions">
-                      {ghConfigured && !task.github_issue_number && (
-                        <button className="btn btn-icon btn-ghost" title="Sync to GitHub"
-                          onClick={() => syncToGitHub(task.id)} disabled={syncingId === task.id}
-                          style={{ fontSize: "14px" }}>
-                          {syncingId === task.id ? '⏳' : '🐙'}
-                        </button>
-                      )}
                       <button className="btn btn-icon btn-ghost" title="Edit task"
                         onClick={() => { setEditingTask(task); setShowModal(true); }}
                         style={{ fontSize: "14px" }}>
