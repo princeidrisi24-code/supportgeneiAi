@@ -25,11 +25,24 @@ export const rawSupabase = createClient<Database>(creds.url, creds.key, {
   },
 });
 
-export async function checkSupabaseConnection(): Promise<{ ok: boolean; message: string }> {
+export function isLiveSupabaseConfigured(): boolean {
   const current = getSupabaseCredentials();
-  if (!current.url || current.url.includes('placeholder') || current.url.includes('tyzzgdrwotbexpnxknhm')) {
+  if (!current.url || !current.key) return false;
+  if (
+    current.url.includes('placeholder') ||
+    current.url.includes('tyzzgdrwotbexpnxknhm') ||
+    current.key.includes('placeholder')
+  ) {
+    return false;
+  }
+  return true;
+}
+
+export async function checkSupabaseConnection(): Promise<{ ok: boolean; message: string }> {
+  if (!isLiveSupabaseConfigured()) {
     return { ok: false, message: 'Current Supabase URL is placeholder or unreachable.' };
   }
+  const current = getSupabaseCredentials();
   try {
     const res = await fetch(`${current.url}/auth/v1/health`, {
       headers: { apikey: current.key },

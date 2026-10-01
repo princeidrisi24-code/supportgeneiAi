@@ -1,10 +1,28 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { supabase, rawSupabase } from '@/lib/supabase';
+import { supabase, rawSupabase, isLiveSupabaseConfigured } from '@/lib/supabase';
 import { purgeMockData, resetWeddingToFresh } from '@/lib/cleanup-mock-data';
 import type { Profile, Wedding } from '@/lib/database.types';
 import type { User, Session } from '@supabase/supabase-js';
+
+function isNetworkOrFetchError(error: any): boolean {
+  if (!error) return false;
+  const msg = (error.message || '').toLowerCase();
+  const name = (error.name || '').toLowerCase();
+  return (
+    error.status === 0 ||
+    name === 'authretryablefetcherror' ||
+    name === 'typeerror' ||
+    msg.includes('load failed') ||
+    msg.includes('fetch') ||
+    msg.includes('network') ||
+    msg.includes('failed to load') ||
+    msg.includes('connection') ||
+    msg.includes('abort') ||
+    msg.includes('offline')
+  );
+}
 
 interface AuthState {
   user: User | null;
@@ -248,45 +266,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ): Promise<{ error?: string }> => {
     const cleanEmail = email.trim().toLowerCase();
 
-    // 1. Try real Supabase auth
-    try {
-      const { data, error } = await rawSupabase.auth.signUp({
-        email: cleanEmail,
-        password,
-        options: { data: { name } },
-      });
-
-      // If Supabase signed up successfully
-      if (!error && data.user) {
-        const userId = data.user.id;
-        await supabase.from('profiles').upsert({
-          id: userId,
-          name,
+    // 1. Try real Supabase auth if live project configured
+    if (isLiveSupabaseConfigured()) {
+      try {
+        const { data, error } = await rawSupabase.auth.signUp({
           email: cleanEmail,
-        }, { onConflict: 'id' });
+          password,
+          options: { data: { name } },
+        });
 
-        const { data: wedData } = await supabase.from('weddings').insert({
-          user_id: userId,
-          partner1_name: partner1,
-          partner2_name: partner2,
-          wedding_date: weddingDate,
-          venue: '',
-          city: '',
-          total_budget: 0,
-        }).select().single();
+        // If Supabase signed up successfully
+        if (!error && data.user) {
+          const userId = data.user.id;
+          await supabase.from('profiles').upsert({
+            id: userId,
+            name,
+            email: cleanEmail,
+          }, { onConflict: 'id' });
 
-        return {};
-      }
+          await supabase.from('weddings').insert({
+            user_id: userId,
+            partner1_name: partner1,
+            partner2_name: partner2,
+            wedding_date: weddingDate,
+            venue: '',
+            city: '',
+            total_budget: 0,
+          }).select().single();
 
-      if (error && !error.message?.toLowerCase().includes('fetch') && !error.message?.toLowerCase().includes('network')) {
-        if (error.message.includes('already registered')) {
-          return { error: 'This email is already registered. Please sign in instead.' };
+          return {};
         }
-        // Return other server-side errors
-        return { error: error.message };
+
+        if (error && !isNetworkOrFetchError(error)) {
+          if (error.message.includes('already registered')) {
+            return { error: 'This email is already registered. Please sign in instead.' };
+          }
+          // Return other real server-side errors
+          return { error: error.message };
+        }
+      } catch (netErr) {
+        console.warn('Supabase auth network unreachable, falling back to local mode:', netErr);
       }
-    } catch {
-      // Supabase network / DNS failure, proceed to local account creation
     }
 
     // 2. Local Mode Account Creation
@@ -381,31 +401,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (email: string, password: string): Promise<{ error?: string }> => {
     const cleanEmail = email.trim().toLowerCase();
 
-    // 1. Try real Supabase auth
-    try {
-      const { data, error } = await rawSupabase.auth.signInWithPassword({
-        email: cleanEmail,
-        password,
-      });
-
-      if (!error && data.user) {
-        const { profile, wedding } = await fetchUserData(data.user.id);
-        setState({
-          user: data.user,
-          profile,
-          wedding,
-          session: data.session,
-          loading: false,
-          isLocalMode: false,
+    // 1. Try real Supabase auth if live project configured
+    if (isLiveSupabaseConfigured()) {
+      try {
+        const { data, error } = await rawSupabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password,
         });
-        return {};
-      }
 
-      if (error && !error.message?.toLowerCase().includes('fetch') && !error.message?.toLowerCase().includes('network')) {
-        return { error: error.message };
+        if (!error && data.user) {
+          const { profile, wedding } = await fetchUserData(data.user.id);
+          setState({
+            user: data.user,
+            profile,
+            wedding,
+            session: data.session,
+            loading: false,
+            isLocalMode: false,
+          });
+          return {};
+        }
+
+        if (error && !isNetworkOrFetchError(error)) {
+          return { error: error.message };
+        }
+      } catch (err) {
+        console.warn('Supabase signin unreachable, falling back to local mode:', err);
       }
-    } catch {
-      // Supabase network / DNS failure, proceed to local account check
     }
 
     // 2. Demo User special handler

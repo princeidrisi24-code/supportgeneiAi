@@ -3,12 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
-// Create a public (anon) client for reading published sites
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabasePublic = createClient(supabaseUrl, supabaseAnonKey);
+// Use smart Supabase client with offline/local fallback support
+const supabasePublic = supabase;
 
 interface TemplateTheme {
   id: string;
