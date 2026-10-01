@@ -89,6 +89,8 @@ export default function Sidebar() {
     }
   };
 
+  if (!user) return null;
+
   const p1 = wedding?.partner1_name || 'Partner 1';
   const p2 = wedding?.partner2_name || 'Partner 2';
   const weddingDateStr = wedding?.wedding_date

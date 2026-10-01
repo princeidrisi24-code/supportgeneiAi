@@ -11,15 +11,16 @@ import CommandPalette from './CommandPalette';
 const PUBLIC_ROUTES = ['/login', '/signup', '/landing'];
 
 function ShellContent({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const { user, loading } = useAuth();
+  const pathname = usePathname() || '';
+  const { user } = useAuth();
 
-  const isPublicSite = pathname.startsWith('/site');
-  const isAuthRoute = PUBLIC_ROUTES.includes(pathname);
-  const isUnauthHome = pathname === '/' && !user && !loading;
+  // Normalize path by stripping trailing slashes (e.g. /login/ -> /login)
+  const cleanPath = pathname.replace(/\/+$/, '') || '/';
+  const isPublicSite = cleanPath.startsWith('/site');
+  const isAuthRoute = PUBLIC_ROUTES.includes(cleanPath);
 
-  if (isAuthRoute || isPublicSite || isUnauthHome) {
-    // Full screen view without sidebar
+  // If user is not logged in, or browsing public/auth pages, NEVER show sidebar
+  if (!user || isAuthRoute || isPublicSite) {
     return <>{children}</>;
   }
 
