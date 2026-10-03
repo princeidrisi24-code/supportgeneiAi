@@ -114,10 +114,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updates.city = '';
         changed = true;
       }
-      if (wedding.total_budget === 2000000 || wedding.total_budget === 2500000) {
+      if (changed && (wedding.total_budget === 2000000 || wedding.total_budget === 2500000)) {
         wedding.total_budget = 0;
         updates.total_budget = 0;
-        changed = true;
       }
       if (changed) {
         try {
@@ -266,6 +265,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ): Promise<{ error?: string }> => {
     const cleanEmail = email.trim().toLowerCase();
 
+    // Extract any pending budget generated from the Live Estimator
+    let initialBudget = 0;
+    let initialItems: any[] = [];
+    if (typeof window !== 'undefined') {
+      try {
+        const savedB = localStorage.getItem('wedcraft_pending_budget');
+        if (savedB) initialBudget = Number(savedB) || 0;
+        const savedItems = localStorage.getItem('wedcraft_pending_breakdown');
+        if (savedItems) initialItems = JSON.parse(savedItems) || [];
+        localStorage.removeItem('wedcraft_pending_budget');
+        localStorage.removeItem('wedcraft_pending_breakdown');
+      } catch {
+        // ignore
+      }
+    }
+
     // 1. Try real Supabase auth if live project configured
     if (isLiveSupabaseConfigured()) {
       try {
@@ -284,15 +299,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             email: cleanEmail,
           }, { onConflict: 'id' });
 
-          await supabase.from('weddings').insert({
+          const { data: createdWed } = await supabase.from('weddings').insert({
             user_id: userId,
             partner1_name: partner1,
             partner2_name: partner2,
             wedding_date: weddingDate,
             venue: '',
             city: '',
-            total_budget: 0,
+            total_budget: initialBudget,
           }).select().single();
+
+          if (createdWed && initialItems.length > 0) {
+            for (const it of initialItems) {
+              await supabase.from('budget_items').insert({
+                wedding_id: createdWed.id,
+                category: it.category,
+                vendor_name: it.vendor_name || '',
+                allocated: it.allocated || 0,
+                spent: 0,
+                paid: false,
+                notes: it.notes || '',
+              });
+            }
+          }
 
           return {};
         }
@@ -347,9 +376,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         wedding_date: weddingDate,
         venue: '',
         city: '',
-        total_budget: 0,
+        total_budget: initialBudget,
         created_at: nowIso,
       };
+
+      if (initialItems.length > 0) {
+        const budgetItems = initialItems.map((item: any) => ({
+          id: `b_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          wedding_id: weddingId,
+          category: item.category,
+          vendor_name: item.vendor_name || '',
+          allocated: item.allocated || 0,
+          spent: 0,
+          paid: false,
+          notes: item.notes || '',
+          created_at: nowIso,
+        }));
+        localStorage.setItem('wedcraft_tbl_budget_items', JSON.stringify(budgetItems));
+      }
 
       // Save user
       users.push(newUser);

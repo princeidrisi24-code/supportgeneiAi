@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import BudgetEstimator from "./BudgetEstimator";
 
 const FEATURES = [
   {
@@ -144,24 +145,7 @@ const FAQS = [
 ];
 
 export default function LandingPage() {
-  // Interactive Calculator State
-  const [budgetVal, setBudgetVal] = useState(1500000); // 15 Lakhs
-  const [guestsCount, setGuestsCount] = useState(250);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  // Calculate allocations
-  const venueCost = Math.round(budgetVal * 0.35);
-  const cateringCost = Math.round(budgetVal * 0.25);
-  const photoCost = Math.round(budgetVal * 0.12);
-  const decorCost = Math.round(budgetVal * 0.14);
-  const attireCost = Math.round(budgetVal * 0.08);
-  const miscCost = Math.round(budgetVal * 0.06);
-
-  const formatINR = (val: number) => {
-    if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
-    if (val >= 100000) return `₹${(val / 100000).toFixed(1)} Lakh`;
-    return `₹${val.toLocaleString("en-IN")}`;
-  };
 
   return (
     <div className="landing-container">
@@ -354,112 +338,14 @@ export default function LandingPage() {
       <section id="calculator" className="landing-section calculator-section">
         <div className="section-header">
           <p className="section-eyebrow">Interactive Planning Tool</p>
-          <h2 className="section-title">Instant Wedding Budget Allocator</h2>
+          <h2 className="section-title">AI-Powered Wedding Budget Allocator</h2>
           <p className="section-subtitle">
-            Drag the sliders below to see our AI-recommended budget breakdown across Indian wedding
-            categories.
+            Select your celebration style, guest count, and estimated budget to see our
+            AI-recommended dynamic allocation with real-time per-plate and per-guest metrics.
           </p>
         </div>
 
-        <div className="calculator-container card">
-          <div className="calc-sliders-grid">
-            <div className="calc-slider-box">
-              <div className="slider-header">
-                <label>Estimated Total Budget:</label>
-                <span className="slider-highlight">{formatINR(budgetVal)}</span>
-              </div>
-              <input
-                type="range"
-                min="300000"
-                max="5000000"
-                step="50000"
-                value={budgetVal}
-                onChange={(e) => setBudgetVal(Number(e.target.value))}
-                className="custom-range"
-              />
-              <div className="slider-scale">
-                <span>₹3 Lakhs</span>
-                <span>₹25 Lakhs</span>
-                <span>₹50 Lakhs</span>
-              </div>
-            </div>
-
-            <div className="calc-slider-box">
-              <div className="slider-header">
-                <label>Estimated Guest Count:</label>
-                <span className="slider-highlight">{guestsCount} Guests</span>
-              </div>
-              <input
-                type="range"
-                min="50"
-                max="800"
-                step="25"
-                value={guestsCount}
-                onChange={(e) => setGuestsCount(Number(e.target.value))}
-                className="custom-range"
-              />
-              <div className="slider-scale">
-                <span>50 Guests</span>
-                <span>400 Guests</span>
-                <span>800 Guests</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="calc-results-grid">
-            <div className="calc-result-pill">
-              <span className="pill-dot" style={{ background: "#753FC9" }}></span>
-              <div className="pill-info">
-                <span className="pill-name">Venue & Stay (35%)</span>
-                <span className="pill-val">{formatINR(venueCost)}</span>
-              </div>
-            </div>
-            <div className="calc-result-pill">
-              <span className="pill-dot" style={{ background: "#4AA564" }}></span>
-              <div className="pill-info">
-                <span className="pill-name">Catering & Food (25%)</span>
-                <span className="pill-val">{formatINR(cateringCost)}</span>
-              </div>
-            </div>
-            <div className="calc-result-pill">
-              <span className="pill-dot" style={{ background: "#FEBD3D" }}></span>
-              <div className="pill-info">
-                <span className="pill-name">Decor & Florals (14%)</span>
-                <span className="pill-val">{formatINR(decorCost)}</span>
-              </div>
-            </div>
-            <div className="calc-result-pill">
-              <span className="pill-dot" style={{ background: "#3B82F6" }}></span>
-              <div className="pill-info">
-                <span className="pill-name">Photo & Video (12%)</span>
-                <span className="pill-val">{formatINR(photoCost)}</span>
-              </div>
-            </div>
-            <div className="calc-result-pill">
-              <span className="pill-dot" style={{ background: "#EC4899" }}></span>
-              <div className="pill-info">
-                <span className="pill-name">Attire & Beauty (8%)</span>
-                <span className="pill-val">{formatINR(attireCost)}</span>
-              </div>
-            </div>
-            <div className="calc-result-pill">
-              <span className="pill-dot" style={{ background: "#9B6FE0" }}></span>
-              <div className="pill-info">
-                <span className="pill-name">Music, Gifts & Misc (6%)</span>
-                <span className="pill-val">{formatINR(miscCost)}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="calc-cta">
-            <p>
-              Want to customize your exact vendor payments and track milestone deposits?
-            </p>
-            <Link href="/signup" className="btn btn-primary btn-md">
-              Track This Budget in WedCraft ✨
-            </Link>
-          </div>
-        </div>
+        <BudgetEstimator initialBudget={2500000} initialGuests={300} />
       </section>
 
       {/* Website Templates Showcase */}

@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { showToast } from "@/app/components/Toast";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
+import BudgetEstimator from "@/app/components/BudgetEstimator";
 import type { BudgetItem } from "@/lib/database.types";
 
 const BUDGET_CATEGORIES = ["Venue", "Catering", "Photography", "Decor", "Attire", "Entertainment", "Invitations", "Makeup & Beauty", "Transport", "Gifts & Favors", "Honeymoon", "Other"];
@@ -110,12 +111,13 @@ function BudgetModal({ onClose, onSave, item, saving }: {
 }
 
 export default function BudgetPage() {
-  const { user, wedding, loading: authLoading } = useAuth();
+  const { user, wedding, loading: authLoading, refreshWedding } = useAuth();
   const router = useRouter();
   const [items, setItems] = useState<BudgetItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showEstimatorModal, setShowEstimatorModal] = useState(false);
   const [editingItem, setEditingItem] = useState<BudgetItem | null>(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
 
@@ -174,6 +176,33 @@ export default function BudgetPage() {
     } catch (err: unknown) {
       if (backup) setItems(prev => [...prev, backup]);
       showToast(err instanceof Error ? err.message : 'Failed to delete.', 'error');
+    }
+  };
+
+  const handleApplyEstimator = async (budget: number, newAllocations: any[]) => {
+    if (!wedding) return;
+    try {
+      await supabase.from('weddings').update({ total_budget: budget }).eq('id', wedding.id);
+
+      const inserts = newAllocations.map((a: any) => ({
+        wedding_id: wedding.id,
+        category: a.category,
+        vendor_name: a.vendor_name,
+        allocated: a.allocated,
+        spent: 0,
+        paid: false,
+        notes: a.notes,
+      }));
+
+      const { data: created, error } = await supabase.from('budget_items').insert(inserts).select();
+      if (error) throw error;
+
+      setItems(prev => [...(Array.isArray(created) ? created : [created]), ...prev]);
+      if (refreshWedding) await refreshWedding();
+      setShowEstimatorModal(false);
+      showToast(`Applied ${fmt(budget)} budget with ${newAllocations.length} categories!`, 'success');
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : 'Failed to apply allocations.', 'error');
     }
   };
 
@@ -320,7 +349,10 @@ export default function BudgetPage() {
           </select>
           <span className="text-sm text-muted">{paidCount} of {items.length} paid</span>
         </div>
-        <div className="toolbar-right">
+        <div className="toolbar-right" style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn btn-secondary" onClick={() => setShowEstimatorModal(true)}>
+            ⚡ AI Live Estimator
+          </button>
           <button className="btn btn-primary" onClick={() => { setEditingItem(null); setShowModal(true); }}>
             + Add Expense
           </button>
@@ -332,8 +364,17 @@ export default function BudgetPage() {
         <div className="empty-state">
           <div className="empty-state-icon">💰</div>
           <div className="empty-state-title">{items.length === 0 ? 'No budget items yet' : 'No items in this category'}</div>
-          <div className="empty-state-text">{items.length === 0 ? 'Start tracking your wedding expenses!' : 'Try selecting a different category.'}</div>
-          {items.length === 0 && <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Add First Expense</button>}
+          <div className="empty-state-text">{items.length === 0 ? 'Start tracking your wedding expenses or auto-estimate with AI!' : 'Try selecting a different category.'}</div>
+          {items.length === 0 && (
+            <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+              <button className="btn btn-secondary" onClick={() => setShowEstimatorModal(true)}>
+                ⚡ Auto-Estimate with AI
+              </button>
+              <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+                + Add First Expense
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="card">
@@ -396,6 +437,29 @@ export default function BudgetPage() {
       )}
 
       {showModal && <BudgetModal onClose={() => { setShowModal(false); setEditingItem(null); }} onSave={saveItem} item={editingItem} saving={saving} />}
+
+      {showEstimatorModal && (
+        <div className="modal-overlay" onClick={() => setShowEstimatorModal(false)}>
+          <div className="modal" style={{ maxWidth: "920px", width: "95vw", padding: 0 }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header" style={{ padding: "20px 24px", borderBottom: "1px solid var(--color-border-light)" }}>
+              <div>
+                <h3 className="modal-title">⚡ AI Wedding Budget Estimator</h3>
+                <p style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-text-secondary)" }}>
+                  Dynamically adjust budget, guest count, and celebration style to re-allocate expenses
+                </p>
+              </div>
+              <button className="modal-close" onClick={() => setShowEstimatorModal(false)}>✕</button>
+            </div>
+            <div style={{ maxHeight: "calc(88vh - 80px)", overflowY: "auto" }}>
+              <BudgetEstimator
+                isEmbeddedInApp={true}
+                initialBudget={totalBudget || 2500000}
+                onApplyBudget={handleApplyEstimator}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
